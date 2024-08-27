@@ -1,7 +1,4 @@
-const NavLinks = [{
-    name: "Home",
-    path: "/"
-},
+export  const NavLinks = [
 {
     name: "Ventas",
     path: "/ventas"
@@ -11,4 +8,6 @@ const NavLinks = [{
     path: "/productos"
 }]
 
-export default NavLinks
+
+export const url= "https://minimarket-virgen-lourdes-backend.onrender.com/"
+

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'; 
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/slices/cartSlice';
 import { getProductsAlmacen } from '../axios/products.axios';
@@ -74,11 +75,12 @@ const Products = () => {
             <p>Precio: ${product.price}</p>
             <p>Codigo: {product.code}</p>
             <p>Stock: {product.stock} unidades</p>
-            <button 
-              onClick={() => handleAddToCart(product)} 
-              className="bg-blue-500 text-white px-2 rounded-lg hover:bg-blue-600"
+            <button
+              onClick={() => handleAddToCart(product)}
+              className={`bg-blue-500 text-white px-2 rounded-lg hover:bg-blue-600 ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={product.stock === 0}
             >
-              Add to Cart
+              {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
             </button>
           </div>
         )) : <div className='text-center'> <h2>No se encontro ningun producto</h2></div>}

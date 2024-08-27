@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { url } from '../utils/utils';
 
 export const getProductsAlmacen = async () => {
     try {
-        const response = await axios.get('https://minimarket-virgen-lourdes-backend.onrender.com/products/get/almacen', {
+        const response = await axios.get(`${url}products/get/almacen`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -15,7 +16,7 @@ export const getProductsAlmacen = async () => {
 }
 export const getAllProducts = async () => {
     try {
-        const response = await axios.get('https://minimarket-virgen-lourdes-backend.onrender.com/products/get', {
+        const response = await axios.get(`${url}products/get`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -35,7 +36,7 @@ export const getAllProducts = async () => {
 
 export const createProductAlmacen = async (product) => {
     try {
-        const response = await axios.post('https://minimarket-virgen-lourdes-backend.onrender.com/products/create', product, {
+        const response = await axios.post(`${url}products/create`, product, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -46,9 +47,9 @@ export const createProductAlmacen = async (product) => {
     }
 }
 
-export const updateProductAlmacen = async (product, productId) => {
+export const updateProductAlmacen = async (productId, product) => {
     try {
-        const response = await axios.put(`https://minimarket-virgen-lourdes-backend.onrender.com/products/products/edit/${productId}`, product, {
+        const response = await axios.put(`${url}products/edit/${productId}`, product, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -61,7 +62,7 @@ export const updateProductAlmacen = async (product, productId) => {
 
 export const deleteProductAlmacen = async (productId) => {
     try {
-        const response = await axios.delete(`https://minimarket-virgen-lourdes-backend.onrender.com/products/delete/${productId}`, {
+        const response = await axios.delete(`${url}products/delete/${productId}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -71,6 +72,19 @@ export const deleteProductAlmacen = async (productId) => {
         console.error('Error deleting product:', error);
     }
 }   
+
+export const getProductId = async (id) => {
+    try {
+        const response = await axios.get(`${url}products/get/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error('Error fetching product:', error);
+    }
+}
 
 
 

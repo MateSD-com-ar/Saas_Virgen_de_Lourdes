@@ -1,55 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Inputs from '../ui/Inputs';
-import { createProductAlmacen } from '../axios/products.axios';
+import { createProductAlmacen, updateProductAlmacen, getProductId } from '../axios/products.axios';
+import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-function ProductsForm({
-  productId,
-  name: existingName = '',
-  description: existingDescription = '',
-  code: existingCode = '',
-  price: existingPrice = '',
-  roleProduct: existingRoleProduct = '',
-  unitMeasure: existingUnitMeasure = '',
-  stock: existingStock = '',
-}) {
+function ProductsForm() {
   const [product, setProduct] = useState({
-    name: existingName,
-    description: existingDescription,
-    code: existingCode,
-    price: existingPrice,
-    roleProduct: existingRoleProduct,
-    unitMeasure: existingUnitMeasure,
-    stock: existingStock,
+    name: '',
+    description: '',
+    code: '',
+    price: '',
+    roleProduct: '',
+    unitMeasure: '',
+    stock: '',
   });
+  const {id}= useParams()
+
   const [error, setError] = useState(null); // State to handle errors
   const [success, setSuccess] = useState(null); // State to handle success messages
 
-  const handleCreateProduct = async () => {
-    try {
-      await createProductAlmacen(product);
-      setSuccess('Producto cargado con éxito');
-      if(productId){
-        setProduct({
-          name: existingName,
-          description: existingDescription,
-          code: existingCode,
-          price: existingPrice,
-          roleProduct: existingRoleProduct,
-          unitMeasure: existingUnitMeasure,
-          stock: existingStock,
-        })
+  // Cargar los datos del producto si productId está definido
+  useEffect(() => {
+    const loadProductData = async () => {
+      if (id) {
+        try {
+          const productData = await getProductId(id); 
+          console.log(productData.data)// Aquí deberías obtener los datos del producto desde la API
+          setProduct(productData.data); // Asegúrate de que la estructura del objeto coincide con el estado
+        } catch (err) {
+          setError('Error al cargar los datos del producto.');
+        }
       }
-      setProduct({
-        name: '',
-        description: '',
-        code: '',
-        price: '',
-        roleProduct: '',
-        unitMeasure: '',
-        stock: '',
-      }); // Reset form fields
+    };
+
+    loadProductData();
+  }, [id]);
+  const handleCreateOrUpdateProduct = async () => {
+    try {
+      if (id) {
+        await updateProductAlmacen(id, product);
+        setSuccess('Producto actualizado con éxito');
+      } else {
+        await createProductAlmacen(product);
+        setSuccess('Producto creado con éxito');
+        setProduct({
+          name: '',
+          description: '',
+          code: '',
+          price: '',
+          roleProduct: '',
+          unitMeasure: '',
+          stock: '',
+        });
+      }
     } catch (err) {
-      setError('Failed to create product. Please try again.');
+      setError('Error al guardar el producto. Por favor, inténtalo de nuevo.');
     }
   };
 
@@ -61,20 +66,22 @@ function ProductsForm({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Basic validation
+    // Validación básica
     if (!product.name || !product.price || !product.roleProduct) {
-      setError('Please fill in all required fields.');
+      setError('Por favor, completa todos los campos obligatorios.');
       return;
     }
 
-    setError(null); // Clear previous errors
-    setSuccess(null); // Clear previous success messages
-    handleCreateProduct();
+    setError(null); // Limpiar errores anteriores
+    setSuccess(null); // Limpiar mensajes de éxito anteriores
+    handleCreateOrUpdateProduct(); // Llamar la función para crear o actualizar
   };
 
   return (
     <div className='max-w-[500px] m-auto'>
-      <h1 className='text-2xl text-center font-serif'>Cargar Producto</h1>
+      <h1 className='text-2xl text-center font-serif'>
+        {id ? 'Editar Producto' : 'Cargar Producto'}
+      </h1>
       {error && <p className='text-red-500 text-center'>{error}</p>}
       {success && <p className='text-green-500 text-center'>{success}</p>}
       <form
@@ -150,6 +157,7 @@ function ProductsForm({
           Guardar
         </button>
       </form>
+      <Link to='/admin' className='text-lg font-semibold px-4 py-1 text-white bg-orange-500  rounded-xl'>Volver</Link>
     </div>
   );
 }

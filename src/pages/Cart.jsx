@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart } from '../redux/slices/cartSlice';
+import { Link } from 'react-router-dom';
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -45,7 +46,7 @@ const Cart = () => {
       <div className='flex flex-1 flex-col gap-2'>
 
       <button onClick={handleOpenModal} className='px-4 py-2 bg-blue-300 w-1/5 rounded-xl text-white font-semibold'>Ver detalles</button>
-      <button className='px-4 py-2 bg-green-600 w-1/5 rounded-xl text-white font-semibold'>Comprar</button>
+      <Link to='/checkout' className='px-4 py-2 bg-green-600 w-1/5 rounded-xl text-white font-semibold'>Comprar</Link>
         </div>
       </div>
 
