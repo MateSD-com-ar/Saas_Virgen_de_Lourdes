@@ -5,6 +5,9 @@ import Ventas from "../pages/Ventas";
 import NavBar from "../components/NavBar";
 import Login from "../auth/Login";
 import ProtectedRoutes from "./protected.routes";
+import Cart from "../pages/Cart";
+import Admin from "../pages/Admin";
+import ProductsForm from "../pages/ProductsForm";
 const Routers = () => {
   return (
     <>
@@ -15,7 +18,12 @@ const Routers = () => {
         <Route path="/" element={<Home />} />
         <Route element={<ProtectedRoutes />}> {/* Rutas protegidas */}
         <Route path="/productos" element={<Products />} />
+        <Route path="/cart" element={<Cart/>}/> 
         <Route path="/ventas" element={<Ventas />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
+        <Route path='/admin' element={<Admin/>}/>
+        <Route path="/producto/create/" element={<ProductsForm/>}/>
+        <Route path="/producto/edit/:id" element={<ProductsForm/>}/>
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>
