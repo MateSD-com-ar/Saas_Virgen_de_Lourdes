@@ -65,16 +65,14 @@ function ProductsForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Validación básica
     if (!product.name || !product.price || !product.roleProduct) {
       setError('Por favor, completa todos los campos obligatorios.');
       return;
     }
 
-    setError(null); // Limpiar errores anteriores
-    setSuccess(null); // Limpiar mensajes de éxito anteriores
-    handleCreateOrUpdateProduct(); // Llamar la función para crear o actualizar
+    setError(null); 
+    setSuccess(null); 
+    handleCreateOrUpdateProduct(); 
   };
 
   return (

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/slices/cartSlice';
-import { getProductsAlmacen } from '../axios/products.axios';
+import { getAllProducts } from '../axios/products.axios';
 import debounce from 'lodash.debounce';
 
 const Products = () => {
@@ -16,7 +16,7 @@ const Products = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await getProductsAlmacen();
+        const response = await getAllProducts();
         if (Array.isArray(response)) {
           setProducts(response);
           setFilteredProducts(response);

@@ -45,6 +45,7 @@ const Admin = () => {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleSearch = useCallback(debounce((searchTerm) => {
     if (products && Array.isArray(products)) {
       const filtered = products.filter(product =>

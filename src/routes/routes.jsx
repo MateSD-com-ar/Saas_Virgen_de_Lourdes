@@ -10,6 +10,7 @@ import ProductsForm from "../pages/ProductsForm";
 import Employ from "../pages/Employ";
 import EmployForm from "../pages/EmployForm";
 import Checkout from "../pages/Checkout";
+import VentaDetails from "../pages/VentaDetails";
 const Routers = () => {
   return (
     <>
@@ -23,6 +24,7 @@ const Routers = () => {
         <Route path="/cart" element={<Cart/>}/> 
         <Route path="checkout" element={<Checkout />} />
         <Route path="/ventas" element={<Ventas />} />
+        <Route path='/venta/:id' element={<VentaDetails/>}/>
         <Route path="*" element={<h1>Not Found</h1>} />
         <Route path='/admin' element={<Admin/>}/>
         <Route path='/empleados' element={<Employ/>}/>

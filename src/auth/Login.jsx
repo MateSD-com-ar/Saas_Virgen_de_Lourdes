@@ -28,7 +28,7 @@ const Login = () => {
 
       if (accessToken) {
         dispatch(login({ token: accessToken, user })); // Adjust payload structure
-        navigate('/');
+        window.location.href = '/';
       } else {
         throw new Error('No token received');
       }

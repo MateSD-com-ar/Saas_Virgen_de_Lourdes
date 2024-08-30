@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { createSale } from '../axios/sales.axios';
-
 const Checkout = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,6 +31,9 @@ const Checkout = () => {
 
     try {
       await createSale(saleData);
+      window.location.href = '/ventas';
+      localStorage.removeItem('cartItems');
+
       // Puedes agregar lógica para manejar el éxito, como redirigir al usuario o limpiar el carrito
     } catch (err) {
       setError('Error creating sale');
