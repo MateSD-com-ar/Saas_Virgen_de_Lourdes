@@ -91,41 +91,46 @@ function ProductsForm() {
           placeholder='Nombre'
           name='name'
           value={product.name}
+          error={error}
           onChange={handleInputChange}
-          className='border px-4 py-1 rounded-lg'
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
           required
         />
         <Inputs
           type="text"
           placeholder='Descripción'
           name='brand'
+          error={error}
           value={product.brand}
           onChange={handleInputChange}
-          className='border px-4 py-1 rounded-lg'
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
         />
         <Inputs
           type="text"
           placeholder='Código'
           name='code'
+          error={error}
           value={product.code}
           onChange={handleInputChange}
-          className='border px-4 py-1 rounded-lg'
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
         />
         <Inputs
           type="number"
           placeholder='Precio'
           name='price'
+          error={error}
           value={product.price}
           onChange={handleInputChange}
-          className='border px-4 py-1 rounded-lg'
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
           required
         />
         <select
           name="roleProduct"
           value={product.roleProduct}
           onChange={handleInputChange}
-          className='border px-4 py-1 rounded-lg'
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
           required
+          error={error}
         >
           <option value="">Categoría</option>
           <option value="Almacen">Almacen</option>
@@ -136,14 +141,16 @@ function ProductsForm() {
           type="text"
           placeholder='Unidad de Medida'
           name='unitMeasure'
+          error={error}
           value={product.unitMeasure}
           onChange={handleInputChange}
-          className='border px-4 py-1 rounded-lg'
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
         />
         <Inputs
           type="number"
           placeholder='Stock'
           name='stock'
+          error={error}
           value={product.stock}
           onChange={handleInputChange}
           className='border px-4 py-1 rounded-lg'

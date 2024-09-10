@@ -88,7 +88,7 @@ export const getSaleClient = async(name)=>{
 
 export const getSaleDate = async(date)=>{
     try {
-        const response = await axios.get(`${url}api/sales?paymentDate=${date}`,{
+        const response = await axios.get(`${url}sales?createdAt=${date}`,{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }

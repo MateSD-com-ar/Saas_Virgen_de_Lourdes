@@ -47,7 +47,7 @@ export const deleteGastos = async(id)=>{
 }
 
 
-export const editGastos = async(id,data)=>{
+export const updateGastos = async(id,data)=>{
     try {
         const response=await axios.put(`${url}expenditure/edit/${id}`,data,{
             headers: {
@@ -58,5 +58,18 @@ export const editGastos = async(id,data)=>{
     }catch(error){
         throw error
     }
+}
 
+
+export const getGastosById = async(id)=>{
+    try {
+        const response=await axios.get(`${url}expenditure/get/${id}`,{
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+        return response
+    }catch(error){
+        throw error
+    }
 }

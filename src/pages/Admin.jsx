@@ -70,7 +70,8 @@ const Admin = () => {
       <h1 className='text-2xl font-bold'>Administrador</h1>
       <div className='mb-4'>
         <Link to='/empleados' className='text-blue-500 hover:underline mr-4'>Ver Empleados</Link>
-        <Link to='/producto/create/' className='text-blue-500 hover:underline'>Cargar Producto</Link>
+        <Link to='/producto/create/' className='text-blue-500 hover:underline mr-4'>Cargar Producto</Link>
+        <Link to='/resumen/' className='text-blue-500 hover:underline mr-4'>Resumen</Link>
       </div>
       <div className='mb-4 flex items-center'>
         <input

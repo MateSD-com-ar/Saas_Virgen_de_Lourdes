@@ -1,78 +1,139 @@
-import { useNavigate } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Inputs from '../ui/Inputs';
+import { createGastos, updateGastos, getGastosById } from '../axios/gastos.axios';
+import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { createGastos } from '../axios/gastos.axios';
-import { TextField, Button } from '@mui/material';
+import { TextField } from '@mui/material';
 
-const GastosForm = () => {
-  const [typeExpenditure, setTypeExpenditure] = useState('');
-  const [reason, setReason] = useState('');
-  const [amountMoney, setAmountMoney] = useState('');
-  const navigate = useNavigate();
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!typeExpenditure || !reason || !amountMoney) {
-      console.error('Please fill in all fields');
-      return;
-    }
-    
-    const data = {
-      typeExpenditure,
-      reason,
-      amountMoney
+function GastosForm() {
+  const [gasto, setGasto] = useState({
+    typeExpenditure: '',
+    reason: '',
+    amountMoney: '',
+  });
+  const { id } = useParams();
+ 
+  const [error, setError] = useState(null); // Estado para manejar errores
+  const [success, setSuccess] = useState(null); // Estado para manejar mensajes de éxito
+
+  // Cargar los datos del gasto si el id está definido
+  useEffect(() => {
+    const loadGastoData = async () => {
+      if (id) {
+        try {
+          const gastoData = await getGastosById(id);
+  
+          // Verifica que los campos de gastoData.data estén definidos
+          if (gastoData?.data) {
+            setGasto({
+              typeExpenditure: gastoData.data.typeExpenditure || '',
+              reason: gastoData.data.reason || '',
+              amountMoney: gastoData.data.amountMoney || '',
+            });
+          } else {
+            setError('Error: los datos del gasto no son válidos.');
+          }
+        } catch (err) {
+          setError('Error al cargar los datos del gasto.');
+        }
+      }
     };
-
+  
+    loadGastoData();
+  }, [id]);
+  
+  const handleCreateOrUpdateGasto = async () => {
     try {
-      const response = await createGastos(data);
-      navigate('/gastos')
-      console.log(response);
-    } catch (error) {
-      console.error('Error creating gastos:', error);
+      if (id) {
+        await updateGastos(id, gasto);
+        setSuccess('Gasto actualizado con éxito');
+      } else {
+        await createGastos(gasto);
+        setSuccess('Gasto creado con éxito');
+        setGasto({
+          typeExpenditure: '',
+          reason: '',
+          amountMoney: '',
+        });
+      }
+    } catch (err) {
+      setError('Error al guardar el gasto. Por favor, inténtalo de nuevo.');
     }
   };
 
-  const handleNumberInput = (event) => {
-    if (event.target.type === 'number') {
-      event.preventDefault(); // Previene el incremento/decremento
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setGasto(prevGasto => ({ ...prevGasto, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!gasto.typeExpenditure || !gasto.reason || !gasto.amountMoney) {
+      setError('Por favor, completa todos los campos obligatorios.');
+      return;
     }
+
+    setError(null); 
+    setSuccess(null); 
+    handleCreateOrUpdateGasto(); 
   };
 
   return (
-    <div className='py-2 max-w-[800px] m-auto'>
-      <h2 className='font-semibold text-2xl'>Ingresar Gasto:</h2>
-      <form onSubmit={handleSubmit} className='flex flex-col items-center justify-center gap-4'>
-         <select
-            name="typeExpenditure"
-            id="typeExpenditure"
-            value={typeExpenditure}
-            onChange={(e) => setTypeExpenditure(e.target.value)}
-            className='border-2 border-gray-300 rounded-lg p-2 w-full'
-          >
-            <option value="Proveedores">Proveedores</option>
-            <option value="GastosDiarios">Gastos Diarios</option>
-            <option value="Impuestos">Impuestos</option>
-          </select>
+    <div className='max-w-[500px] m-auto'>
+      <h1 className='text-2xl text-center font-serif'>
+        {id ? 'Editar Gasto' : 'Cargar Gasto'}
+      </h1>
+      {error && <p className='text-red-500 text-center'>{error}</p>}
+      {success && <p className='text-green-500 text-center'>{success}</p>}
+      <form
+        className='flex flex-col flex-1 justify-center items-center gap-4 w-1/2 m-auto'
+        onSubmit={handleSubmit}
+      >
+      
+        <select
+          name="typeExpenditure"
+          value={gasto.typeExpenditure}
+          onChange={handleInputChange}
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : ' w-full px-3 py-1 rounded-full'}`}
+          required
+        >
+          <option value="">Tipo de Gasto</option>
+          <option value="Proveedores">Proveedores</option>
+          <option value="GastosDiarios">Gastos Diarios</option>
+          <option value="Impuestos">Impuestos</option>
+        </select>
         <TextField
           type="text"
           label='Concepto'
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          className='border-2 border-gray-300 rounded-lg p-2'
+          name='reason'
+          error={error}
+          value={gasto.reason}
+          onChange={handleInputChange}
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
+          required
         />
         <TextField
           type="number"
           label='Importe $'
-          value={amountMoney}
-          onChange={(e) => setAmountMoney(e.target.value)}
-          className='border-2 border-gray-300 rounded-lg p-2'
-          onWheel={handleNumberInput} // Previene el scroll
-          // onKeyDown={handleNumberInput} // Previene las flechas del teclado
+          name='amountMoney'
+          error={error}
+          value={gasto.amountMoney}
+          onChange={handleInputChange}
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
+          required
         />
-        <button type="submit" className='bg-green-500 text-white px-4 py-1 rounded-xl'>Guardar</button>
+        <button
+          type="submit"
+          className='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600'
+        >
+          {id ? 'Actualizar' : 'Guardar'}
+        </button>
       </form>
-      <Link to='/gastos' className='text-lg font-semibold px-4 py-1 text-white bg-orange-500 rounded-xl'>Volver</Link>
+      <Link to='/gastos' className='text-lg font-semibold px-4 py-1 text-white bg-orange-500 rounded-xl'>
+        Volver
+      </Link>
     </div>
   );
-};
+}
 
 export default GastosForm;

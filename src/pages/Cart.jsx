@@ -57,6 +57,7 @@ const Cart = () => {
           type="text" 
           placeholder='Nombre cliente' 
           value={client}
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : ''}`}
           onChange={(e) => setClient(e.target.value)} 
         />
         {error && <p className="text-red-500">{error}</p>}

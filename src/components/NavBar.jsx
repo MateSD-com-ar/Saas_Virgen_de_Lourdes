@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { NavLinks } from '../utils/utils';
 import { useSelector, useDispatch } from 'react-redux';
-import CartSvg from '../cart.svg';
 import { logout } from '../redux/slices/authSlice';
 
 const NavBar = () => {

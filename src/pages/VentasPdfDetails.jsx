@@ -45,13 +45,14 @@ const VentasPdfDetails = () => {
         doc.text(`Vendedor: ${user?.name || 'No disponible'}`, 14, 70);
 
         if (saleDetailsProducts && saleDetailsProducts.length > 0) {
-            const tableColumn = ["Producto", "Descripción", "Cantidad", "Precio Unitario", "Precio Total"];
+            const tableColumn = ["Producto", "Descripción", "Cantidad", "Precio Unitario", "Precio Total", "Unida de Medida"];
             const tableRows = saleDetailsProducts.map(product => [
                 product.product.name,
                 product.description || '', // Use empty string as fallback for description
                 product.quantity,
                 product.unitPrice,
-                product.totalPrice
+                product.totalPrice,
+                product.product.unitMeasure,
             ]);
 
             doc.autoTable({

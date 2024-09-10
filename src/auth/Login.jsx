@@ -2,11 +2,9 @@ import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { login } from '../redux/slices/authSlice';
 import { authLogin } from '../axios/auth';
-import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -38,7 +36,7 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
-  }, [username, password, dispatch, navigate]);
+  }, [username, password, dispatch]);
 
   return (
     <div className='flex flex-col items-center bg-slate-600 w-full h-screen gap-7'>
@@ -49,7 +47,7 @@ const Login = () => {
         <input
           type="text"
           id="username"
-          className='px-3 py-1 rounded-full'
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
           onChange={handleUsernameChange}
           value={username}
           aria-required="true"
@@ -59,7 +57,7 @@ const Login = () => {
         <input
           type="password"
           id="password"
-          className='px-3 py-1 rounded-full'
+          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
           onChange={handlePasswordChange}
           value={password}
           aria-required="true"

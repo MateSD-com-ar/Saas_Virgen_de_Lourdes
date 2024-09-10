@@ -47,7 +47,7 @@ const Ventas = () => {
   );
 
   return (
-    <div className='max-w-[900px] m-auto py-5'>
+    <div className='w-[900px] m-auto p-2'>
       <div className='flex flex-1 items-center justify-between pb-10'>
         <h2 className='text-2xl font-serif font-bold'>Ventas</h2>
         <TextField

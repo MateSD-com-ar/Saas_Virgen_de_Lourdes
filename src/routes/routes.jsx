@@ -14,6 +14,7 @@ import VentaDetails from "../pages/VentaDetails";
 import Gastos from "../pages/Gastos";
 import GastosForm from "../pages/GastosForm";
 import VentasPdfDetails from "../pages/VentasPdfDetails";
+import Resumen from "../pages/Resumen";
 const Routers = () => {
   return (
     <>
@@ -26,6 +27,7 @@ const Routers = () => {
         <Route path="/productos" element={<Products />} />
         <Route path="/gastos" element={<Gastos />} />
         <Route path="/gastos/create" element={<GastosForm />} />
+        <Route path="/gastos/edit/:id" element={<GastosForm />} />
         <Route path="/cart" element={<Cart/>}/> 
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/ventas" element={<Ventas />} />
@@ -33,6 +35,7 @@ const Routers = () => {
         <Route path="/venta/details/:id" element={<VentasPdfDetails />}/>
         <Route path="*" element={<h1>Not Found</h1>} />
         <Route path='/admin' element={<Admin/>}/>
+        <Route path='/resumen' element={<Resumen/>}/>
         <Route path='/empleados' element={<Employ/>}/>
         <Route path='/empleados/create' element={<EmployForm/>}/>
         <Route path="/producto/create/" element={<ProductsForm/>}/>
