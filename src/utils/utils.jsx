@@ -6,6 +6,10 @@ export  const NavLinks = [
 {
     name: "Productos",
     path: "/productos"
+},
+{
+    name:"Gastos",
+    path: "/gastos"
 }]
 
 

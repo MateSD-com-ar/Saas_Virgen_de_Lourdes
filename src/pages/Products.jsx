@@ -68,7 +68,7 @@ const Products = () => {
           onChange={onSearchChange}
         />
       </div>
-      <div className="grid grid-cols-2 gap-2 p-5">
+      <div className="flex flex-wrap gap-4">
         {filteredProducts.length > 0 ? filteredProducts.map(product => (
           <div key={product.idProduct} className="border-2 border-solid border-black p-2 rounded-lg">
             <h3>Producto: {product.name}</h3>

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 function ProductsForm() {
   const [product, setProduct] = useState({
     name: '',
-    description: '',
+    brand: '',
     code: '',
     price: '',
     roleProduct: '',
@@ -45,7 +45,7 @@ function ProductsForm() {
         setSuccess('Producto creado con éxito');
         setProduct({
           name: '',
-          description: '',
+          brand: '',
           code: '',
           price: '',
           roleProduct: '',
@@ -98,8 +98,8 @@ function ProductsForm() {
         <Inputs
           type="text"
           placeholder='Descripción'
-          name='description'
-          value={product.description}
+          name='brand'
+          value={product.brand}
           onChange={handleInputChange}
           className='border px-4 py-1 rounded-lg'
         />

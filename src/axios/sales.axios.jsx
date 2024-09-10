@@ -2,9 +2,27 @@ import axios from "axios"
 import { url } from "../utils/utils"
 
 
-export const getAllSales = async()=>{
+export const getAllSales = async () => {
     try {
-        const response = await axios.get(`${url}api/sales`,{
+      const response = await axios.get(`${url}api/sales`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return { message: "No se encontraron ventas", data: [] };
+      } else {
+        throw error;
+      }
+    }
+  };
+
+
+export const createSale = async(data)=>{
+    try {
+        const response = await axios.post(`${url}api/sales`,data,{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -15,10 +33,9 @@ export const getAllSales = async()=>{
     }
 }
 
-
-export const createSale = async(data)=>{
+export const createSaleDetails = async(data)=>{
     try {
-        const response = await axios.post(`${url}api/sales`,data,{
+        const response = await axios.post(`${url}details/create`,data,{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -98,7 +115,7 @@ export const getSalePayment = async(payment)=>{
 
 export const updateSale = async(id, data )=>{
     try {
-        const response = await axios.put(`${url}api/sales?id=${id}`,data,{
+        const response = await axios.put(`${url}api/sales/${id}`,data,{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -109,3 +126,15 @@ export const updateSale = async(id, data )=>{
     }
 }
 
+export const deleteSale = async(id)=>{
+    try {
+        const response = await axios.delete(`${url}api/sales/${id}`,{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        console.log(error)
+    }
+}

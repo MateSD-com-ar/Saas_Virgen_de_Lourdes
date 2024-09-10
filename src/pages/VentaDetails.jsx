@@ -1,31 +1,29 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { getSaleDetails, updateSale } from '../axios/sales.axios';
-
+import { useNavigate } from 'react-router-dom';
 const VentaDetails = () => {
+  const { id } = useParams();
   const [venta, setVenta] = useState({});
   const [formData, setFormData] = useState({
     cuil: '',
     interest: '',
     discount: '',
     paymentMethod: '',
-    status: ''
+    paymentStatus: '',
   });
-  const { id } = useParams();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchVenta = async () => {
       try {
         const response = await getSaleDetails(id);
         setVenta(response);
-        // Initialize form data with existing sale details if necessary
         setFormData({
           cuil: response.cuil || '',
           interest: response.interest || '',
           discount: response.discount || '',
           paymentMethod: response.paymentMethod || '',
-          status: response.status || ''
+          paymentStatus: response.paymentStatus || ''
         });
       } catch (error) {
         console.error('Error fetching venta:', error);
@@ -34,15 +32,42 @@ const VentaDetails = () => {
 
     fetchVenta();
   }, [id]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { cuil, interest, discount, paymentMethod, paymentStatus } = formData;
+
+    // Validación si el método de pago es CURRENT_ACCOUNT
+    if (paymentMethod === 'CURRENT_ACCOUNT' && (!cuil || !interest || !discount || !paymentStatus)) {
+      alert('Todos los campos son obligatorios cuando el método de pago es Cuenta Corriente con Crédito');
+      return;
+    }
+
+    // Crear un objeto solo con los valores que no están vacíos
+    const updatedData = {};
+
+    if (cuil) updatedData.cuil = cuil;
+    if (discount) updatedData.discount = discount;
+    updatedData.paymentMethod = paymentMethod;
+    updatedData.paymentStatus = paymentStatus;
+
+    // Si el método de pago es CURRENT_ACCOUNT y el estado es CREDIT, agregar el interés si existe
+    if (paymentMethod === 'CURRENT_ACCOUNT' && paymentStatus === 'CREDIT' && interest) {
+      updatedData.interest = interest;
+    }
+
     try {
-      await updateSale(id, formData);
+      await updateSale(id, updatedData);
+      navigate('/ventas')
       alert('Sale updated successfully!');
     } catch (error) {
       console.error('Error updating venta:', error);
@@ -53,16 +78,12 @@ const VentaDetails = () => {
     return <div>Loading...</div>;
   }
 
+  const isInterestEnabled = formData.paymentMethod === 'CURRENT_ACCOUNT' && formData.paymentStatus === 'CREDIT';
+
   return (
     <div className='max-w-[800px] m-auto'>
       <div className='flex flex-row items-center justify-between mb-4'>
-        {
-          venta.map((item)=> (
-            <div key={item.idProduct}>
-              <h3>Finalizar orden de compra de {item.client} - {new Date(item.createdAt).toLocaleString()}</h3>
-            </div>
-          ))
-        }
+        <h3>Finalizar orden de compra de {venta.client} - {new Date(venta.createdAt).toLocaleString()}</h3>
       </div>
       <form onSubmit={handleSubmit}>
         <div className='mb-4'>
@@ -76,8 +97,10 @@ const VentaDetails = () => {
             className='border-2 border-gray-300 rounded-lg p-2 w-full'
           />
         </div>
+
+        {/* Input for Interest */}
         <div className='mb-4'>
-          <label htmlFor="interest" className='block'>Interes:</label>
+          <label htmlFor="interest" className='block'>Interés:</label>
           <input
             type="number"
             name="interest"
@@ -85,8 +108,10 @@ const VentaDetails = () => {
             value={formData.interest}
             onChange={handleChange}
             className='border-2 border-gray-300 rounded-lg p-2 w-full'
+            disabled={!isInterestEnabled}
           />
         </div>
+
         <div className='mb-4'>
           <label htmlFor="discount" className='block'>Descuento:</label>
           <input
@@ -98,8 +123,9 @@ const VentaDetails = () => {
             className='border-2 border-gray-300 rounded-lg p-2 w-full'
           />
         </div>
+
         <div className='mb-4'>
-          <label htmlFor="paymentMethod" className='block'>Metodo de pago:</label>
+          <label htmlFor="paymentMethod" className='block'>Método de pago:</label>
           <select
             name="paymentMethod"
             id="paymentMethod"
@@ -107,33 +133,36 @@ const VentaDetails = () => {
             onChange={handleChange}
             className='border-2 border-gray-300 rounded-lg p-2 w-full'
           >
-            <option value="">Selecionar metodo de pago</option>
-            <option value="Efectivo">Efectivo</option>
-            <option value="Debito">Débito</option>
-            <option value="Tarjeta Credito">Tarjeta Crédito</option>
-            <option value="Fiado">Fiado</option>
-            <option value="Transferencia">Transferencia</option>
-            <option value="Qr">QR</option>
+            <option value="">Seleccionar método de pago</option>
+            <option value="CASH">Efectivo</option>
+            <option value="DEBIT_CARD">Débito</option>
+            <option value="CREDIT_CARD">Tarjeta Crédito</option>
+            <option value="CURRENT_ACCOUNT">Fiado</option>
+            <option value="TRANSFER">Transferencia</option>
+            <option value="QR">QR</option>
+          </select>
+        </div>
 
-          </select>
-        </div>
         <div className='mb-4'>
-          <label htmlFor="status" className='block'>Estado:</label>
-          <select name="" id=""  
-          className='border-2 border-gray-300 rounded-lg p-2 w-full'
-          value={formData.status} onChange={handleChange}
+          <label htmlFor="paymentStatus" className='block'>Estado:</label>
+          <select
+            name="paymentStatus"
+            id="paymentStatus"
+            className='border-2 border-gray-300 rounded-lg p-2 w-full'
+            value={formData.paymentStatus}
+            onChange={handleChange}
           >
-            <option value="Pendiente">Pendiente</option>
-            <option value="Pagado">Pagado</option>
-            <option value="Fiado">Fiado</option>
+            <option value="PENDING">Pendiente</option>
+            <option value="PAID">Pagado</option>
+            <option value="CREDIT">Fiado</option>
           </select>
-         
         </div>
+
         <button
           type="submit"
           className='text-lg font-semibold px-4 py-2 text-white bg-blue-500 rounded-xl'
         >
-         FINALIZAR
+          FINALIZAR
         </button>
       </form>
     </div>
@@ -141,7 +170,3 @@ const VentaDetails = () => {
 };
 
 export default VentaDetails;
-// metodos de pago: CASH, CURRENT_ACCOUNT, CREDIT_CARD, DEBIT_CARD, TRANSFER, QR 
-// estados: PENDING,
-//     PAID,
-//     CREDIT

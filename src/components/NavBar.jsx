@@ -30,7 +30,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className='bg-slate-950/5 text-black flex justify-between gap-4 px-2 items-center w-full m-auto h-10'>
+    <div className='bg-slate-950/5 text-black flex justify-between gap-4 px-2 items-center w-full m-auto h-10 py-4 mb-2'>
       <div className='flex flex-1 gap-2 px-4 flex-row items-center justify-center'>
         {NavLinks.map((link, index) => (
           <Link key={index} to={link.path} className='hover:text-orange-500'>
@@ -39,12 +39,12 @@ const NavBar = () => {
         ))}
       </div>
       <div className='flex flex-1 flex-row items-center gap-4'>
-        <div className='relative'>
-          <Link to='/cart' className='hover:text-orange-500 text-2xl'>
-            <img src={CartSvg} alt='' className='w-4 h-4 font-white' />
+        <div className='flex gap-2'>
+          <Link to='/cart' className=' flex gap-1 hover:text-orange-500 text-2xl'>
+            Venta Activa 
             {cartNumber > 0 && (
-              <span className='absolute -bottom-1 -right-0 text-black font-bold text-[10px]'>
-                {cartNumber}
+              <span className=''>
+                 {cartNumber}
               </span>
             )}
           </Link>

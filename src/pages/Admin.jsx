@@ -35,7 +35,7 @@ const Admin = () => {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      await deleteProductAlmacen(productId, token);
+      await deleteProductAlmacen(productId);
       const updatedProducts = products.filter(product => product.idProduct !== productId);
       setProducts(updatedProducts);
       setFilteredProducts(updatedProducts);

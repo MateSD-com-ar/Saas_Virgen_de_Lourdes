@@ -1,46 +1,97 @@
 import React, { useState, useEffect } from 'react';
-import { createSale } from '../axios/sales.axios';
+import { createSaleDetails } from '../axios/sales.axios';
+
 const Checkout = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [client, setClient] = useState('');
-  const [products, setProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [productInputs, setProductInputs] = useState({});
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProducts(prevProduct => ({ ...prevProduct, [name]: value }));
+  // Obtener productos desde localStorage
+  const productsData = JSON.parse(localStorage.getItem('cartItems')) || [];
+  const saleId = localStorage.getItem('saleId'); // Obtener el saleId desde localStorage
+
+  // Productos adicionales que se pueden agregar
+  const additionalProducts = [
+    {
+      idProduct: 2,
+      name: "verduleria",
+      brand: "verduleria",
+      code: "",
+      price: 0.0,
+      roleProduct: "Verduleria",
+      unitMeasure: "",
+      stock: 0
+    },
+    {
+      idProduct: 1,
+      name: "carne",
+      brand: "carne",
+      code: "",
+      price: 0.0,
+      roleProduct: "Carniceria",
+      unitMeasure: "kilogramo",
+      stock: 0
+    }
+  ];
+
+  // Manejar selección de productos
+  const handleCheckboxChange = (e, product) => {
+    if (e.target.checked) {
+      setSelectedProducts([...selectedProducts, product]);
+    } else {
+      setSelectedProducts(selectedProducts.filter(p => p.idProduct !== product.idProduct));
+    }
   };
 
-  const user = JSON.parse(localStorage.getItem('user'))
+  // Manejar cambios en los inputs de nombre, precio y descripción
+  const handleInputChange = (e, idProduct) => {
+    const { name, value } = e.target;
+    setProductInputs(prevState => ({
+      ...prevState,
+      [idProduct]: {
+        ...prevState[idProduct],
+        [name]: value
+      }
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const productsData = JSON.parse(localStorage.getItem('cartItems')) || [];
-    const saleDetailsProducts = productsData.map(item => ({
-      quantity: item.quantity,
-      product: item.idProduct
-    }));
-
-    const saleData = {
-      client,
-      userId: user.id, // Ajusta este valor según sea necesario
-      saleDetailsProducts
-    };
-
-    
 
     try {
-      await createSale(saleData);
+      // Crear los detalles de la venta
+      const saleDetailsProducts = [
+        ...productsData.map(item => ({
+          quantity: item.quantity,
+          product: item.idProduct,
+          unitMeasure: item.unitMeasure, 
+          unitPrice: item.price,
+          saleId: saleId,
+          description: item.brand,
+        })),
+        ...selectedProducts.map(product => ({
+          quantity: productInputs[product.idProduct]?.quantity || 1,
+          product: product.idProduct,
+          name: productInputs[product.idProduct]?.name || product.name,
+          description: productInputs[product.idProduct]?.brand || product.brand,
+          unitMeasure: productInputs[product.idProduct]?.unitMeasure || product.unitMeasure || '',
+          unitPrice: productInputs[product.idProduct]?.price || product.price,
+          
+          saleId: saleId,
+        }))
+      ];
+
+      // Enviar los productos directamente a la API
+      await createSaleDetails(saleDetailsProducts);
+
+      // Redirigir a la página de ventas
       window.location.href = '/ventas';
       localStorage.removeItem('cartItems');
-
-      // Puedes agregar lógica para manejar el éxito, como redirigir al usuario o limpiar el carrito
     } catch (err) {
-      setError('Error creating sale');
+      setError('Error creating sale or sale details');
     }
-    console.log(client)
   };
-
 
   useEffect(() => {
     setLoading(false);
@@ -54,35 +105,72 @@ const Checkout = () => {
     return <div className='text-center'>Error: {error}</div>;
   }
 
-  const productsData = JSON.parse(localStorage.getItem('cartItems')) || [];
-
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="client"
-          value={client}
-          onChange={(e) => setClient(e.target.value)}
-          placeholder="Client Name"
-          required
-        />
-        
         <button type="submit">Create Sale</button>
-      </form>
-      <div>
-        {
-          productsData.map((item, index) => (
+
+        <div>
+          {productsData.map((item, index) => (
             <div key={index}>
               <p>{item.name}</p>
               <p>{item.price}</p>
               <p>{item.quantity}</p>
             </div>
-          ))
-        }
-      </div>
+          ))}
+        </div>
+
+        <h3>Agregar productos adicionales</h3>
+        {additionalProducts.map((product, index) => (
+          <div key={index}>
+            <label>
+              <input
+                type="checkbox"
+                onChange={(e) => handleCheckboxChange(e, product)}
+              />
+              {product.name}
+            </label>
+
+            {selectedProducts.some(p => p.idProduct === product.idProduct) && (
+              <div>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Nombre del producto"
+                  value={productInputs[product.idProduct]?.name || product.name}
+                  onChange={(e) => handleInputChange(e, product.idProduct)}
+                />
+
+                <input
+                  type="text"
+                  name="brand"
+                  placeholder="Descripción"
+                  value={productInputs[product.idProduct]?.brand || product.brand}
+                  onChange={(e) => handleInputChange(e, product.idProduct)}
+                />
+
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Precio"
+                  value={productInputs[product.idProduct]?.price || product.price}
+                  onChange={(e) => handleInputChange(e, product.idProduct)}
+                />
+
+                <input
+                  type="number"
+                  name="quantity"
+                  placeholder="Cantidad"
+                  value={productInputs[product.idProduct]?.quantity || ''}
+                  onChange={(e) => handleInputChange(e, product.idProduct)}
+                />
+              </div>
+            )}
+          </div>
+        ))}
+      </form>
     </div>
   );
-}
+};
 
 export default Checkout;

@@ -11,6 +11,9 @@ import Employ from "../pages/Employ";
 import EmployForm from "../pages/EmployForm";
 import Checkout from "../pages/Checkout";
 import VentaDetails from "../pages/VentaDetails";
+import Gastos from "../pages/Gastos";
+import GastosForm from "../pages/GastosForm";
+import VentasPdfDetails from "../pages/VentasPdfDetails";
 const Routers = () => {
   return (
     <>
@@ -21,10 +24,13 @@ const Routers = () => {
         <Route element={<ProtectedRoutes />}> {/* Rutas protegidas */}
         <Route path="/" element={<Products />} />
         <Route path="/productos" element={<Products />} />
+        <Route path="/gastos" element={<Gastos />} />
+        <Route path="/gastos/create" element={<GastosForm />} />
         <Route path="/cart" element={<Cart/>}/> 
-        <Route path="checkout" element={<Checkout />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/ventas" element={<Ventas />} />
         <Route path='/venta/:id' element={<VentaDetails/>}/>
+        <Route path="/venta/details/:id" element={<VentasPdfDetails />}/>
         <Route path="*" element={<h1>Not Found</h1>} />
         <Route path='/admin' element={<Admin/>}/>
         <Route path='/empleados' element={<Employ/>}/>
