@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { getSaleDetails, updateSale } from '../axios/sales.axios';
 import { useNavigate } from 'react-router-dom';
+
 const VentaDetails = () => {
   const { id } = useParams();
   const [venta, setVenta] = useState({});
@@ -13,6 +14,7 @@ const VentaDetails = () => {
     paymentStatus: '',
   });
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchVenta = async () => {
       try {
@@ -47,7 +49,7 @@ const VentaDetails = () => {
     const { cuil, interest, discount, paymentMethod, paymentStatus } = formData;
 
     // Validación si el método de pago es CURRENT_ACCOUNT
-    if (paymentMethod === 'CURRENT_ACCOUNT' && (!cuil || !interest || !discount || !paymentStatus)) {
+    if (paymentMethod === 'CURRENT_ACCOUNT' && (!interest || !paymentStatus || !cuil)) {
       alert('Todos los campos son obligatorios cuando el método de pago es Cuenta Corriente con Crédito');
       return;
     }
@@ -55,27 +57,32 @@ const VentaDetails = () => {
     // Crear un objeto solo con los valores que no están vacíos
     const updatedData = {};
 
-    if (cuil) updatedData.cuil = cuil;
-    if (discount) updatedData.discount = discount;
-    updatedData.paymentMethod = paymentMethod;
-    updatedData.paymentStatus = paymentStatus;
+    // Si el estado es 'PENDING' solo mandamos ese campo
+    if (paymentStatus === 'PENDING') {
+      updatedData.paymentStatus = paymentStatus;
+    } else {
+      if (cuil) updatedData.cuil = cuil;
+      if (discount) updatedData.discount = discount;
+      updatedData.paymentMethod = paymentMethod;
+      updatedData.paymentStatus = paymentStatus;
 
-    // Si el método de pago es CURRENT_ACCOUNT y el estado es CREDIT, agregar el interés si existe
-    if (paymentMethod === 'CURRENT_ACCOUNT' && paymentStatus === 'CREDIT' && interest) {
-      updatedData.interest = interest;
+      // Si el método de pago es CURRENT_ACCOUNT y el estado es CREDIT, agregar el interés si existe
+      if (paymentMethod === 'CURRENT_ACCOUNT' && paymentStatus === 'CREDIT' && interest) {
+        updatedData.interest = interest;
+      }
     }
 
     try {
       await updateSale(id, updatedData);
-      navigate('/ventas')
-      alert('Sale updated successfully!');
+      navigate('/ventas');
+      alert('Venta actualizada exitosamente');
     } catch (error) {
-      console.error('Error updating venta:', error);
+      console.error('Error actualizando la venta:', error);
     }
   };
 
   if (!venta || Object.keys(venta).length === 0) {
-    return <div>Loading...</div>;
+    return <div className='w-full m-auto text-center'>Cargando...</div>;
   }
 
   const isInterestEnabled = formData.paymentMethod === 'CURRENT_ACCOUNT' && formData.paymentStatus === 'CREDIT';

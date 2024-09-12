@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getSaleDetails } from '../axios/sales.axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import Modal from 'react-modal';
+import Modal from 'react-modal'; 
 
 // Set root element for accessibility
 Modal.setAppElement('#root');
@@ -13,7 +13,6 @@ const VentasPdfDetails = () => {
     const [venta, setVenta] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [pdfData, setPdfData] = useState(null);
-
     useEffect(() => {
         const fetchVenta = async () => {
             try {
@@ -25,7 +24,7 @@ const VentasPdfDetails = () => {
         };
         fetchVenta();
     }, [id]);
-
+    localStorage.setItem('saleId', id)
     // Destructuring firstVenta directly in return statement to avoid unnecessary variable assignment
     const { createdAt, total, client, user, saleDetailsProducts } = venta[0] || {};
 
@@ -91,8 +90,11 @@ const VentasPdfDetails = () => {
             <h1>Detalle de la venta</h1>
             <p>Fecha: {formatDate(createdAt)}</p>
             <p>Total: {total === 0 ? 'Nada que mostrar' : total}</p>
-            <button onClick={generatePDF}>Generar PDF</button>
+            <div className='flex flex-col gap-4 mt-4 w-1/2'>
 
+            <button onClick={generatePDF} className='text-lg font-semibold px-4 py-1 text-white bg-green-500 rounded-full'>Generar PDF</button>
+            <Link to='/checkout' className=' text-center text-lg font-semibold px-4 py-1 text-white bg-blue-500 rounded-full'>Agregar productos</Link>
+            </div>
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}

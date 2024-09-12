@@ -67,7 +67,6 @@ const Ventas = () => {
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>Cliente</TableCell>
-                <TableCell>Subtotal</TableCell>
                 <TableCell>Total</TableCell>
                 <TableCell>Estado</TableCell>
                 <TableCell>Creada</TableCell>
@@ -84,22 +83,22 @@ const Ventas = () => {
                   </TableRow>
                 ) :
                 filteredVentas.map((sale) => (
-                  <TableRow key={sale.id}>
+                  <TableRow key={sale.id} className={`${sale.paymentStatus === 'PENDING' ? 'bg-yellow-300':''}`}>
                     <TableCell>{sale.id}</TableCell>
                     <TableCell>{sale.client}</TableCell>
-                    <TableCell>{sale.subtotal}</TableCell>
                     <TableCell>{sale.total}</TableCell>
                     <TableCell>{sale.paymentStatus === 'PAID' ? 'PAGADA' : sale.paymentStatus === 'PENDING' ? 'Pendiente' : 'Fiado'}</TableCell>
                     <TableCell>{new Date(sale.createdAt).toLocaleString()}</TableCell>
-                    <TableCell><Link to={`/venta/details/${sale.id}`}           className='text-lg font-semibold px-4 py-1 text-white bg-blue-500 rounded-xl'
-                    >Detalles</Link></TableCell>
                     <TableCell>
-                      <Link to={`/venta/${sale.id}`} className='text-lg font-semibold px-4 py-1 text-white bg-green-500 rounded-xl'>
-                        Finalizar
+                      <Link to={`/venta/details/${sale.id}`} className='text-lg font-semibold px-4 py-1 h-auto text-white bg-blue-500 rounded-full'>Detalles</Link>
+                    </TableCell>
+                    <TableCell>
+                      <Link to={`/venta/${sale.id}`} className='text-lg font-semibold px-4 py-1 text-white bg-green-500 rounded-full'>
+                       Estado
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <button onClick={() => handleDelete(sale.id)} className='text-lg font-semibold px-4 py-1 text-white bg-red-500 rounded-xl'>
+                      <button onClick={() => handleDelete(sale.id)} className='text-lg font-semibold px-4  text-white bg-red-500 rounded-full'>
                         Eliminar
                       </button>
                      

@@ -3,6 +3,7 @@ import Inputs from '../ui/Inputs';
 import { createProductAlmacen, updateProductAlmacen, getProductId } from '../axios/products.axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { TextField } from '@mui/material';
 
 function ProductsForm() {
   const [product, setProduct] = useState({
@@ -86,9 +87,9 @@ function ProductsForm() {
         className='flex flex-col flex-1 justify-center items-center gap-4'
         onSubmit={handleSubmit}
       >
-        <Inputs
+        <TextField
           type="text"
-          placeholder='Nombre'
+          label='Nombre'
           name='name'
           value={product.name}
           error={error}
@@ -96,27 +97,27 @@ function ProductsForm() {
           className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
           required
         />
-        <Inputs
+        <TextField
           type="text"
-          placeholder='Descripción'
+          label='Descripción'
           name='brand'
           error={error}
           value={product.brand}
           onChange={handleInputChange}
           className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
         />
-        <Inputs
+        <TextField
           type="text"
-          placeholder='Código'
+          label='Código'
           name='code'
           error={error}
           value={product.code}
           onChange={handleInputChange}
           className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
         />
-        <Inputs
+        <TextField
           type="number"
-          placeholder='Precio'
+          label='Precio'
           name='price'
           error={error}
           value={product.price}
@@ -137,18 +138,18 @@ function ProductsForm() {
           <option value="Verduleria">Verduleria</option>
           <option value="Carniceria">Carniceria</option>
         </select>
-        <Inputs
+        <TextField
           type="text"
-          placeholder='Unidad de Medida'
+          label='Unidad de Medida'
           name='unitMeasure'
           error={error}
           value={product.unitMeasure}
           onChange={handleInputChange}
           className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
         />
-        <Inputs
+        <TextField
           type="number"
-          placeholder='Stock'
+          label='Stock'
           name='stock'
           error={error}
           value={product.stock}

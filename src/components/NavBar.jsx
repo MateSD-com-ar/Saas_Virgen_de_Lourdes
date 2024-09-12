@@ -40,7 +40,7 @@ const NavBar = () => {
       <div className='flex flex-1 flex-row items-center gap-4'>
         <div className='flex gap-2'>
           <Link to='/cart' className=' flex gap-1 hover:text-orange-500 text-2xl'>
-            Venta Activa 
+            Nueva Venta 
             {cartNumber > 0 && (
               <span className=''>
                  {cartNumber}

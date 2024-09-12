@@ -70,17 +70,17 @@ const Products = () => {
       </div>
       <div className="flex flex-wrap gap-4">
         {filteredProducts.length > 0 ? filteredProducts.map(product => (
-          <div key={product.idProduct} className="border-2 border-solid border-black p-2 rounded-lg">
-            <h3>Producto: {product.name}</h3>
-            <p>Precio: ${product.price}</p>
-            <p>Codigo: {product.code}</p>
-            <p>Stock: {product.stock} unidades</p>
+          <div key={product.idProduct} className="border-2 border-solid border-black p-2 my-2 rounded-lg">
+            <h3><strong>Producto:</strong> {product.name}</h3>
+            <p><strong>Precio:</strong> ${product.price}</p>
+            <p><strong>Codigo:</strong> {product.code}</p>
+            <p><strong>Strock</strong> {product.stock} unidades</p>
             <button
               onClick={() => handleAddToCart(product)}
-              className={`bg-blue-500 text-white px-2 rounded-lg hover:bg-blue-600 ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`bg-blue-500 text-white mt-2 px-4 py-1 rounded-full hover:bg-blue-600 ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={product.stock === 0}
             >
-              {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+              {product.stock === 0 ? 'Sin Stock' : 'Agregar'}
             </button>
           </div>
         )) : <div className='text-center'> <h2>No se encontro ningun producto</h2></div>}

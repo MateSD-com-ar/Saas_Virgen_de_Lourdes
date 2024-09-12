@@ -29,12 +29,15 @@ const Gastos = () => {
       <div className='flex flex-wrap gap-2'>
         {error && <p>{error}</p>}
       {gastos && gastos.map((gasto, index) => (
-          <div key={index} className='border rounded-xl px-4 py-2'>
+          <div key={index} className='border rounded-xl px-4 py-2 gap-4 flex flex-col'>
+            <div>
+
           <p>{gasto.dateExpenditure}</p>
           <p>{gasto.typeExpenditure  === 'GastosDiarios' ? 'Gastos Diarios' : gastos.typeExpenditure === 'Provedores' ? 'Provedores' : 'Impuestos'}</p>
           <p>Gasto: {gasto.reason}</p>
           <p>Importe: {gasto.amountMoney}</p>
-          <Link to={`/gastos/edit/${gasto.idExpenditure}`} className='bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600'>Editar</Link>
+            </div>
+          <Link to={`/gastos/edit/${gasto.idExpenditure}`} className='bg-blue-500 text-white px-4 py-1 text-center font-semibold  rounded-lg hover:bg-blue-600'>Editar</Link>
         </div>
       ))}
       </div>
