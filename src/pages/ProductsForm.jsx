@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Inputs from '../ui/Inputs';
 import { createProductAlmacen, updateProductAlmacen, getProductId } from '../axios/products.axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';

@@ -7,14 +7,14 @@ import { logout } from '../redux/slices/authSlice';
 const NavBar = () => {
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart); // Access the cart slice from Redux state
-  const [cartNumber, setCartNumber] = useState(cart.totalQuantity);
+  // const [cartNumber, setCartNumber] = useState(cart.totalQuantity);
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
     setUser(userData);
-    setCartNumber(cart.totalQuantity);
+    // setCartNumber(cart.totalQuantity);
   }, [cart.totalQuantity]);
 
   useEffect(() => {

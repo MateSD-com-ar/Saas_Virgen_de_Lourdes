@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect} from 'react';
 import { createSaleDetails, getSaleDetails, deleteDetailsSale, updateDetailsSale } from '../axios/sales.axios';
 import { getProductsAlmacen } from '../axios/products.axios';
 import { GiCow } from "react-icons/gi";
@@ -19,7 +19,6 @@ const Checkout = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const productsData = JSON.parse(localStorage.getItem('cartItems')) || [];
   const saleId = JSON.parse(localStorage.getItem('saleId'))
   console.log(saleId)
   const {id} = useParams()
@@ -41,11 +40,7 @@ const Checkout = () => {
     };
     fetchProducts();
   }, []);
-  // const handleDelete = useCallback((index) => {
-  //   const updatedCart = [...productsData];
-  //   updatedCart.splice(index, 1);
-  //   localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-  // }, [productsData]);
+
 if(id){
 
 
@@ -62,18 +57,34 @@ if(id){
   
 }
 
-  const handleInputChange = (e, index, type) => {
-    const { name, value } = e.target;
-    // if (type === 'cart') {
-    //   const updatedCart = [...productsData];
-    //   updatedCart[index][name] = value;
-    //   localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-    // } else {
-      const updatedProducts = [...additionalProducts];
-      updatedProducts[index][name] = value;
-      setAdditionalProducts(updatedProducts);
-    // }
-  };
+const handleInputChange = async (e, index, type) => {
+  const { name, value } = e.target;
+
+  if (type === 'cart') {
+    const updatedCart = [...saleDetail]; // Asegúrate de clonar el array
+    const productToUpdate = updatedCart[index]?.product;
+
+    if (productToUpdate) {
+      updatedCart[index].quantity = value; // Actualiza la cantidad en el frontend
+
+      // Envía la actualización al backend
+      try {
+        await updateDetailsSale(updatedCart[index].id, { quantity: value });
+        setSaleDetails(updatedCart); // Actualiza el estado del frontend
+      } catch (error) {
+        console.error('Error updating sale detail:', error);
+        setError('Error updating sale detail');
+      }
+    } else {
+      console.error("El producto no existe en el índice proporcionado");
+    }
+  } else {
+    // Manejo de productos adicionales
+    const updatedProducts = [...additionalProducts];
+    updatedProducts[index][name] = value;
+    setAdditionalProducts(updatedProducts);
+  }
+};
   
 const deleteDetails = async (id) => {
   try {
@@ -98,7 +109,6 @@ const deleteDetails = async (id) => {
     // Obtener el ID del producto desde el índice del array
     const itemId = cartItems[index].idProduct;
   
-    // Despachar la acción removeFromCart con el ID del producto
     dispatch(removeFromCart(itemId));
   };
 
@@ -106,14 +116,7 @@ const deleteDetails = async (id) => {
     e.preventDefault();
     try {
       const saleDetailsProducts = [
-        // ...productsData.map(item => ({
-        //   quantity: item.quantity,
-        //   product: item.idProduct,
-        //   unitMeasure: item.unitMeasure,
-        //   unitPrice: item.price,
-        //   saleId: id,
-        //   description: item.brand,
-        // })),
+       
         ...additionalProducts.map((product) => ({
           quantity: product.quantity || '',
           product: product.idProduct,
@@ -171,31 +174,29 @@ const deleteDetails = async (id) => {
               </tr>
             </thead>
             <tbody>
-            {
-  saleDetail[0]?.saleDetailsProducts.map((item, index) => (
-    <tr key={index} className='border-b'>
-      <td className='py-2 px-4 capitalize'>{item.product.name}</td>
-      <td className='py-2 px-4 capitalize'>{item.product.brand}</td>
-      <td className='py-2 px-4'>
-        <input
-          type="number"
-          name="quantity"
-          value={item.product.quantity}
-          onChange={(e) => handleInputChange(e, index, 'cart')}
-          className='border px-2 py-1 rounded w-full'
-        />
-      </td>
-      <td className='py-2 px-4'>${item.product.price}</td>
-      <td className='py-2 px-4'>
-
-      {
-              id===undefined ? <button type="button" onClick={() => handleremoveProduct(index)} className='text-red-500 font-semibold'>Eliminar</button> : <button type="button" onClick={() => deleteDetails(item.id)} className='text-red-500 font-semibold'>Eliminar</button>
-            }
-        
-      </td>
-    </tr>
-  )
-)}
+            {saleDetail && saleDetail[0]?.saleDetailsProducts.map((item, index) => (
+  <tr key={index} className='border-b'>
+    <td className='py-2 px-4 capitalize'>{item.product.name}</td>
+    <td className='py-2 px-4 capitalize'>{item.product.brand}</td>
+    <td className='py-2 px-4'>
+      <input
+        type="number"
+        name="quantity"
+        value={item.quantity}
+        onChange={(e) => handleInputChange(e, index, 'cart')}
+        className='border px-2 py-1 rounded w-full'
+      />
+    </td>
+    <td className='py-2 px-4'>${item.product.price}</td>
+    <td className='py-2 px-4'>
+      {id === undefined ? (
+        <button type="button" onClick={() => handleremoveProduct(index)} className='text-red-500 font-semibold'>Eliminar</button>
+      ) : (
+        <button type="button" onClick={() => deleteDetails(item.id)} className='text-red-500 font-semibold'>Eliminar</button>
+      )}
+    </td>
+  </tr>
+))}
 
             </tbody>
           </table>
