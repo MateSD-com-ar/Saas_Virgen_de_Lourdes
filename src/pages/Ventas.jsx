@@ -49,7 +49,14 @@ const Ventas = () => {
   const filteredVentas = ventas?.filter(venta =>
     venta.client.toLowerCase().includes(search.toLowerCase())
   );
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+};
   return (
     <div className='w-full max-w-5xl mx-auto p-2'>
       <div className='flex flex-col lg:flex-row items-center justify-between pb-10'>
@@ -69,7 +76,7 @@ const Ventas = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
+                {/* <TableCell>ID</TableCell> */}
                 <TableCell>Cliente</TableCell>
                 <TableCell>Total</TableCell>
                 <TableCell>Estado</TableCell>
@@ -88,11 +95,11 @@ const Ventas = () => {
                 ) :
                 filteredVentas.map((sale) => (
                   <TableRow key={sale.id} className={`${sale.paymentStatus === 'PENDING' ? 'bg-yellow-300':''}`}>
-                    <TableCell>{sale.id}</TableCell>
+                    {/* <TableCell>{sale.id}</TableCell> */}
                     <TableCell>{sale.client}</TableCell>
                     <TableCell>{sale.total}</TableCell>
                     <TableCell>{sale.paymentStatus === 'PAID' ? 'PAGADA' : sale.paymentStatus === 'PENDING' ? 'Pendiente' : 'Fiado'}</TableCell>
-                    <TableCell>{sale.createdAt}</TableCell>
+                    <TableCell>{formatDate(sale.createdAt)}</TableCell>
                     <TableCell>
                       <Link to={`/venta/details/${sale.id}`} className='text-lg font-semibold px-4 py-1 h-auto text-white bg-blue-500 rounded-full'>Detalles</Link>
                     </TableCell>

@@ -134,8 +134,7 @@ function ProductsForm() {
         >
           <option value="">Categoría</option>
           <option value="Almacen">Almacen</option>
-          <option value="Verduleria">Verduleria</option>
-          <option value="Carniceria">Carniceria</option>
+         
         </select>
         <TextField
           type="text"

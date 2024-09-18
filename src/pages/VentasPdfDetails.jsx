@@ -12,7 +12,7 @@ const VentasPdfDetails = () => {
     const [venta, setVenta] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [pdfData, setPdfData] = useState(null);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
     useEffect(() => {
         const fetchVenta = async () => {
@@ -50,9 +50,10 @@ const VentasPdfDetails = () => {
         doc.text(`Vendedor: ${user?.name || 'No disponible'}`, 14, 45);
 
         if (saleDetailsProducts && saleDetailsProducts.length > 0) {
-            const tableColumn = ["Producto", "Descripción", "Cantidad", "Precio Unitario", "Precio Total", "Unidad de Medida"];
+            const tableColumn = ["Producto","Marca", "Descripción", "Cantidad", "Precio Unitario", "Precio Total", "Unidad de Medida"];
             const tableRows = saleDetailsProducts.map(product => [
                 product.product.name,
+                product.product.brand || '',
                 product.description || '',
                 product.quantity,
                 product.unitPrice,
@@ -63,6 +64,7 @@ const VentasPdfDetails = () => {
 
             const totalRow = [
                 'Total de la compra',
+                '',
                 '',
                 '',
                 '',
@@ -120,23 +122,19 @@ const VentasPdfDetails = () => {
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 contentLabel="Vista Previa del PDF"
-                className="modal max-w-full mx-auto p-4"
-                overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50"
+                className="modal"
+                overlayClassName="overlay"
             >
-                <div className='flex justify-end mb-2'>
-                    <button onClick={closeModal} className="text-white bg-red-600 rounded-full px-3 py-1">X</button>
+                <div className='flex justify-end items-center max-w-[800px] m-auto py-4 mx-4'>
+                    <button onClick={closeModal} className="close-button px-2 text-white bg-red-600 rounded-full relative right-0">X</button>
                 </div>
-                {pdfData ? (
-                    <iframe
-                        src={pdfData}
-                        width="100%"
-                        height="80vh"
-                        title="PDF Preview"
-                        className="border-0"
-                    />
-                ) : (
-                    <p>Loading...</p>
-                )}
+                <iframe
+                    src={pdfData}
+                    width="80%"
+                    height="600px"
+                    title="PDF Preview"
+                    className="pdf-iframe m-auto"
+                />
             </Modal>
         </div>
     );

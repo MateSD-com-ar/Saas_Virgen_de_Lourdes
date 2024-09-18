@@ -1,7 +1,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-
+@import 'tailwindcss/utilities';
 /* Estilos para el Modal */
 .modal {
     position: absolute;
@@ -16,7 +16,6 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-
 .overlay {
     position: fixed;
     top: 0;
@@ -25,7 +24,6 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
 }
-
 .close-button {
     position: absolute;
     top: 10px;
@@ -37,14 +35,11 @@
     padding: 8px 16px;
     cursor: pointer;
 }
-
-
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }

@@ -13,7 +13,7 @@ const VentaDetails = () => {
     paymentMethod: '',
     paymentStatus: '',
   });
-  const [error, setError] = useState(null);
+  const [errorFields, setErrorFields] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,7 +30,6 @@ const VentaDetails = () => {
           paymentStatus: response.paymentStatus || ''
         });
       } catch (err) {
-        setError('Error fetching venta details');
         console.error('Error fetching venta:', err);
       }
     };
@@ -44,19 +43,26 @@ const VentaDetails = () => {
       ...prevData,
       [name]: value,
     }));
+    setErrorFields(prev => ({ ...prev, [name]: false })); // Reset error for the field being changed
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { cuil, interest, discount, paymentMethod, paymentStatus } = formData;
+    let errors = {};
 
     if (paymentMethod === 'CURRENT_ACCOUNT' && (!interest || !paymentStatus || !cuil)) {
-      setError('Todos los campos son obligatorios cuando el método de pago es Cuenta Corriente (FIADO)');
-      return;
+      if (!cuil) errors.cuil = true;
+      if (!interest) errors.interest = true;
+      if (!paymentStatus) errors.paymentStatus = true;
     }
 
     if (paymentStatus === 'PAID' && !paymentMethod) {
-      setError('El método de pago es obligatorio cuando el estado es Pagado');
+      errors.paymentMethod = true;
+    }
+
+    if (Object.keys(errors).length) {
+      setErrorFields(errors);
       return;
     }
 
@@ -76,14 +82,9 @@ const VentaDetails = () => {
       navigate('/ventas');
       alert('Venta actualizada exitosamente');
     } catch (err) {
-      setError('Error actualizando la venta');
       console.error('Error actualizando la venta:', err);
     }
   };
-
-  if (error) {
-    return <div className='w-full m-auto text-center text-red-600'>{error}</div>;
-  }
 
   if (!venta) {
     return <div className='w-full m-auto text-center'>Cargando...</div>;
@@ -115,7 +116,7 @@ const VentaDetails = () => {
             id="cuil"
             value={formData.cuil}
             onChange={handleChange}
-            className='border-2 border-gray-300 rounded-lg p-2 w-full'
+            className={`border-2 rounded-lg p-2 w-full ${errorFields.cuil ? 'border-red-500' : 'border-gray-300'}`}
           />
         </div>
 
@@ -127,7 +128,7 @@ const VentaDetails = () => {
             id="interest"
             value={formData.interest}
             onChange={handleChange}
-            className='border-2 border-gray-300 rounded-lg p-2 w-full'
+            className={`border-2 rounded-lg p-2 w-full ${errorFields.interest ? 'border-red-500' : 'border-gray-300'}`}
             disabled={!isInterestEnabled}
           />
         </div>
@@ -140,7 +141,7 @@ const VentaDetails = () => {
             id="discount"
             value={formData.discount}
             onChange={handleChange}
-            className='border-2 border-gray-300 rounded-lg p-2 w-full'
+            className={`border-2 rounded-lg p-2 w-full ${errorFields.discount ? 'border-red-500' : 'border-gray-300'}`}
           />
         </div>
 
@@ -151,7 +152,7 @@ const VentaDetails = () => {
             id="paymentMethod"
             value={formData.paymentMethod}
             onChange={handleChange}
-            className='border-2 border-gray-300 rounded-lg p-2 w-full'
+            className={`border-2 rounded-lg p-2 w-full ${errorFields.paymentMethod ? 'border-red-500' : 'border-gray-300'}`}
           >
             <option value="">Seleccionar método de pago</option>
             <option value="CASH">Efectivo</option>
@@ -168,7 +169,7 @@ const VentaDetails = () => {
           <select
             name="paymentStatus"
             id="paymentStatus"
-            className='border-2 border-gray-300 rounded-lg p-2 w-full'
+            className={`border-2 rounded-lg p-2 w-full ${errorFields.paymentStatus ? 'border-red-500' : 'border-gray-300'}`}
             value={formData.paymentStatus}
             onChange={handleChange}
           >

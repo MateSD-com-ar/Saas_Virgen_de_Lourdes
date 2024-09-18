@@ -132,8 +132,8 @@ const Checkout = () => {
           <table className='min-w-full bg-white border border-gray-200'>
             <thead>
               <tr className='border-b'>
-                <th className='py-2 px-4 text-left'>Nombre</th>
-                <th className='py-2 px-4 text-left'>Marca</th>
+                <th className='py-2 px-4 text-left'>Producto</th>
+                <th className='py-2 px-4 text-left'>Descripcion</th>
                 <th className='py-2 px-4 text-left'>Precio</th>
                 <th className='py-2 px-4 text-left'>Cantidad</th>
               </tr>
@@ -142,8 +142,8 @@ const Checkout = () => {
               {saleDetail && saleDetail[0]?.saleDetailsProducts.map((item, index) => (
                 <tr key={index} className='border-b'>
                   <td className='py-2 px-4 capitalize'>{item.product.name}</td>
-                  <td className='py-2 px-4 capitalize'>{item.product.brand}</td>
-                  <td className='py-2 px-4'>${item.product.price}</td>
+                  <td className='py-2 px-4 capitalize'>{item.description}</td>
+                  <td className='py-2 px-4'>${item.unitPrice}</td>
                   <td className='py-2 px-4'>{item.quantity}</td>
                   <td className='py-2 px-4'>
                     <button type="button" onClick={() => deleteDetails(item.id)} className='text-red-500 font-semibold'>Eliminar</button>
@@ -221,11 +221,15 @@ const Checkout = () => {
         />
         <div>
           {filteredProducts.map((product) => (
-            <div key={product.idProduct} className='border-2 mt-2 px-4 py-2 rounded flex flex-row gap-3'>
-              <h2>Producto: <strong>{product.name}</strong></h2>
+            <div key={product.idProduct} className='border-2 mt-2 px-4 py-2 rounded flex flex-col lg:flex-row place-items-center gap-3'>
+              <p className='capitalize'>Producto: <strong>{product.name}</strong></p>
+              <p className='capitalize'>Marca: {product.brand}</p>
               <p>Precio: ${product.price}</p>
               <p>Stock: {product.stock}</p>
-              <button type="button" onClick={() => addProduct(product)} className={`${product.stock === 0 ? 'hidden' : 'bg-blue-500 text-white px-4 py-1 rounded-full mt-2'} `}>Agregar</button>
+              {
+                product.stock === 0 ? <p className='text-red-500'>Sin stock</p> : <button type="button" onClick={() => addProduct(product)} className={`${product.stock === 0 ? 'hidden' : 'bg-blue-500 text-white px-4 py-1 rounded-full mt-2'} `}>Agregar</button>
+              }
+              
             </div>
           ))}
         </div>
