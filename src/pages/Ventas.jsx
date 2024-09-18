@@ -30,13 +30,17 @@ const Ventas = () => {
     fetchVentas();
   }, []);
   const handleDelete = async (id) => {
-    try {
-      await deleteSale(id);
-      setVentas(ventas.filter(venta => venta.id !== id));
-    } catch (error) {
-      setError("Ha ocurrido un error al eliminar la venta.");
+    const confirmed = window.confirm("¿Estás seguro de que quieres eliminar esta venta?");
+    if (confirmed) {
+      try {
+        await deleteSale(id);
+        setVentas(ventas.filter(venta => venta.id !== id));
+      } catch (error) {
+        setError("Ha ocurrido un error al eliminar la venta.");
+      }
     }
   };
+  
 
   const handleSearch = (e) => {
     setSearch(e.target.value);

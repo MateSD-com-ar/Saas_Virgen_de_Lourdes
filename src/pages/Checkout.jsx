@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { createSaleDetails, getSaleDetails } from '../axios/sales.axios';
+import React, { useState, useEffect, useCallback} from 'react';
+import { createSaleDetails, getSaleDetails, deleteDetailsSale, updateDetailsSale } from '../axios/sales.axios';
 import { getProductsAlmacen } from '../axios/products.axios';
 import { GiCow } from "react-icons/gi";
 import { LuVegan } from "react-icons/lu";
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector} from 'react-redux';
+import { removeFromCart } from '../redux/slices/cartSlice';
 
 const Checkout = () => {
   const [error, setError] = useState(null);
@@ -10,20 +13,21 @@ const Checkout = () => {
   const [productsAlmacen, setProductsAlmacen] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [saleDetail, setSaleDetails] = useState([])
-  // Obtener productos desde localStorage
+  const [saleDetail, setSaleDetails] = useState([]);
+  const [additionalProducts, setAdditionalProducts] = useState([]);
+  const cartItems = useSelector((state) => state.cart.items); // Obtén los items del carrito desde el estado de Redux
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const productsData = JSON.parse(localStorage.getItem('cartItems')) || [];
-  const saleId = localStorage.getItem('saleId'); // Obtener el saleId desde localStorage
-  // Productos base de verdulería y carnicería
+  const saleId = JSON.parse(localStorage.getItem('saleId'))
+  console.log(saleId)
+  const {id} = useParams()
   const initialAdditionalProducts = [
     { icon: <LuVegan className='text-xl' />, idProduct: 2, name: "Verduleria", brand: "Verduleria", price: 'price', roleProduct: "Verduleria", unitMeasure: "", stock: 0 },
     { icon: <GiCow className='text-xl' />, idProduct: 1, name: "Carniceria", brand: "Carniceria", price: 'price', roleProduct: "Carniceria", unitMeasure: "kilogramo", stock: 0 }
   ];
 
-  // Estado para almacenar productos adicionales dinámicos
-  const [additionalProducts, setAdditionalProducts] = useState([]);
-  console.log(saleId)
-  // Obtener productos del almacén desde la API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -37,77 +41,102 @@ const Checkout = () => {
     };
     fetchProducts();
   }, []);
-  const id = localStorage.getItem('saleId');
-  useEffect(() => {
+  // const handleDelete = useCallback((index) => {
+  //   const updatedCart = [...productsData];
+  //   updatedCart.splice(index, 1);
+  //   localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+  // }, [productsData]);
+if(id){
+
+
     const fetchData = async () => {
       try {
         const response = await getSaleDetails(id);
         setSaleDetails(response);
-        console.log(response);
       } catch (error) {
         console.log(error);
       }
-    }
-  
+    };
     fetchData();
-  }, [id]);
+
   
-  console.log(saleDetail)
-  // Manejar cambios en los inputs de nombre, precio y descripción
-  const handleInputChange = (e, index) => {
+}
+
+  const handleInputChange = (e, index, type) => {
     const { name, value } = e.target;
-    const updatedProducts = [...additionalProducts];
-    updatedProducts[index][name] = value;
-    setAdditionalProducts(updatedProducts);
+    // if (type === 'cart') {
+    //   const updatedCart = [...productsData];
+    //   updatedCart[index][name] = value;
+    //   localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+    // } else {
+      const updatedProducts = [...additionalProducts];
+      updatedProducts[index][name] = value;
+      setAdditionalProducts(updatedProducts);
+    // }
   };
+  
+const deleteDetails = async (id) => {
+  try {
+    await deleteDetailsSale(id);
+    const updatedDetails = saleDetail.filter(detail => detail.id !== id);
+    setSaleDetails(updatedDetails);
+    window.location.reload();
+  } catch (error) {
+    console.log(error);
+  }
+} 
 
-  // Función para agregar un nuevo producto de verdulería o carnicería
   const addProduct = (product) => {
-    setAdditionalProducts([...additionalProducts, { ...product }]);
+    setAdditionalProducts([...additionalProducts, { ...product, quantity: '' }]);
   };
 
-  // Función para eliminar un producto
   const removeProduct = (index) => {
     const updatedProducts = additionalProducts.filter((_, i) => i !== index);
     setAdditionalProducts(updatedProducts);
+  };
+  const handleremoveProduct = (index) => {
+    // Obtener el ID del producto desde el índice del array
+    const itemId = cartItems[index].idProduct;
+  
+    // Despachar la acción removeFromCart con el ID del producto
+    dispatch(removeFromCart(itemId));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Crear los detalles de la venta
       const saleDetailsProducts = [
-        ...productsData.map(item => ({
-          quantity: item.quantity,
-          product: item.idProduct,
-          unitMeasure: item.unitMeasure,
-          unitPrice: item.price,
-          saleId: saleId,
-          description: item.brand,
-        })),
+        // ...productsData.map(item => ({
+        //   quantity: item.quantity,
+        //   product: item.idProduct,
+        //   unitMeasure: item.unitMeasure,
+        //   unitPrice: item.price,
+        //   saleId: id,
+        //   description: item.brand,
+        // })),
         ...additionalProducts.map((product) => ({
-          quantity: product.quantity || 1,
+          quantity: product.quantity || '',
           product: product.idProduct,
           name: product.name || '',
           description: product.brand || '',
           unitMeasure: product.unitMeasure || '',
           unitPrice: product.price || 0,
-          saleId: saleId,
+          saleId: id,
         }))
       ];
 
-      // Enviar los productos directamente a la API
       await createSaleDetails(saleDetailsProducts);
-
-      // Redirigir a la página de ventas
-      window.location.href = '/ventas';
+      if(id){
+        navigate(`/venta/${id}`);
+      } else if( saleId) {
+        navigate(`/venta/${saleId}`);}
+     
       localStorage.removeItem('cartItems');
     } catch (err) {
       setError('Error creating sale or sale details');
     }
   };
 
-  // Manejar el filtrado de productos en el almacén
   useEffect(() => {
     const results = productsAlmacen.filter(product =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -127,21 +156,51 @@ const Checkout = () => {
     <div className='max-w-[800px] m-auto pt-5'>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <div className='flex flex-row justify-between items-center'>
-
-        {/* <h1 className='text-2xl font-serif font-bold'>{saleDetail[0].client}</h1> */}
-        <button type="submit" className='bg-green-500 text-white px-4 py-1 rounded-full font-semibold w-40'>Cerrar Venta</button>
+          <button type="submit" className='bg-green-500 text-white px-4 py-1 rounded-full font-semibold w-40'>Cerrar Venta</button>
         </div>
 
-        <div className='flex flex-col items-start justify-start'>
-          {productsData.map((item, index) => (
-            <div key={index} className='border-y-2 border-black w-60'>
-              <p>Producto: {item.name}</p>
-              <p>Marca: {item.brand}</p>
-              <p>Cantidad: {item.quantity}</p>
-              <p>Precio: ${item.price}</p>
-            </div>
-          ))}
+        <div className='mt-6'>
+          <h3 className='text-xl font-semibold mb-2'>Productos en el carrito</h3>
+          <table className='min-w-full bg-white border border-gray-200'>
+            <thead>
+              <tr className='border-b'>
+                <th className='py-2 px-4 text-left'>Nombre</th>
+                <th className='py-2 px-4 text-left'>Marca</th>
+                <th className='py-2 px-4 text-left'>Cantidad</th>
+                <th className='py-2 px-4 text-left'>Precio</th>
+              </tr>
+            </thead>
+            <tbody>
+            {
+  saleDetail[0]?.saleDetailsProducts.map((item, index) => (
+    <tr key={index} className='border-b'>
+      <td className='py-2 px-4 capitalize'>{item.product.name}</td>
+      <td className='py-2 px-4 capitalize'>{item.product.brand}</td>
+      <td className='py-2 px-4'>
+        <input
+          type="number"
+          name="quantity"
+          value={item.product.quantity}
+          onChange={(e) => handleInputChange(e, index, 'cart')}
+          className='border px-2 py-1 rounded w-full'
+        />
+      </td>
+      <td className='py-2 px-4'>${item.product.price}</td>
+      <td className='py-2 px-4'>
+
+      {
+              id===undefined ? <button type="button" onClick={() => handleremoveProduct(index)} className='text-red-500 font-semibold'>Eliminar</button> : <button type="button" onClick={() => deleteDetails(item.id)} className='text-red-500 font-semibold'>Eliminar</button>
+            }
+        
+      </td>
+    </tr>
+  )
+)}
+
+            </tbody>
+          </table>
         </div>
+
         <h3>Agregar productos adicionales</h3>
         {additionalProducts.map((product, index) => (
           <div key={index} className='flex flex-1 gap-2'>
@@ -150,7 +209,7 @@ const Checkout = () => {
               name="name"
               placeholder="Nombre del producto"
               value={product.name}
-              onChange={(e) => handleInputChange(e, index)}
+              onChange={(e) => handleInputChange(e, index, 'additional')}
               className='border-2 px-4 py-2 rounded-full'
             />
 
@@ -159,7 +218,7 @@ const Checkout = () => {
               name="brand"
               placeholder="Descripción"
               value={product.brand}
-              onChange={(e) => handleInputChange(e, index)}
+              onChange={(e) => handleInputChange(e, index, 'additional')}
               className='border-2 px-4 py-2 rounded-full'
             />
             <input
@@ -167,7 +226,7 @@ const Checkout = () => {
               name="price"
               placeholder="Precio"
               value={product.price}
-              onChange={(e) => handleInputChange(e, index)}
+              onChange={(e) => handleInputChange(e, index, 'additional')}
               className='border-2 px-4 py-2 rounded-full'
             />
             <input
@@ -175,7 +234,7 @@ const Checkout = () => {
               name="quantity"
               placeholder="Cantidad"
               value={product.quantity}
-              onChange={(e) => handleInputChange(e, index)}
+              onChange={(e) => handleInputChange(e, index, 'additional')}
               className='border-2 px-4 py-2 rounded-full'
             />
             <button type="button" onClick={() => removeProduct(index)} className='px-4 py-1 bg-red-700 text-white font-medium rounded-full'>Eliminar</button>
@@ -189,8 +248,8 @@ const Checkout = () => {
               key={index}
               type="button"
               onClick={() => addProduct(product)}
-              className={`${product.roleProduct==='Verduleria' ?
-                'bg-green-500 text-white px-4 py-1 rounded-full font-semibold w-full flex flex-row items-center gap-4 justify-center':
+              className={`${product.roleProduct === 'Verduleria' ?
+                'bg-green-500 text-white px-4 py-1 rounded-full font-semibold w-full flex flex-row items-center gap-4 justify-center' :
                 'bg-red-500 text-white px-4 py-1 rounded-full font-semibold w-full flex flex-row items-center gap-4 justify-center'
               }`}
             >
@@ -204,25 +263,21 @@ const Checkout = () => {
         <h3>Buscar productos en almacén</h3>
         <input
           type="text"
-          placeholder="Buscar producto"
+          placeholder="Buscar producto..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border px-4 py-2 rounded w-full"
+          className='border-2 px-4 py-2 rounded-full'
         />
-        <ul className="mt-4">
-          {filteredProducts.map((product, index) => (
-            <li key={index} className="py-2">
-              {product.name} - ${product.price}
-              <button
-                type="button"
-                className="ml-2 bg-blue-500 text-white px-2 py-1 rounded"
-                onClick={() => addProduct(product)}
-              >
-                Agregar
-              </button>
-            </li>
+        <div>
+          {filteredProducts.map((product) => (
+            <div key={product.idProduct} className='border-2 mt-2 px-4 py-2 rounded flex flex-row gap-3'>
+              <h2>Producto: <strong>{product.name}</strong></h2>
+              <p>Precio: ${product.price}</p>
+              <p>Stock: {product.stock}</p>
+              <button type="button" onClick={() => addProduct(product)} className={`${product.stock=== 0 ? 'hidden': 'bg-blue-500 text-white px-4 py-1 rounded-full mt-2'} `}>Agregar</button>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

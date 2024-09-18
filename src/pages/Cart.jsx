@@ -6,23 +6,23 @@ import { createSale } from '../axios/sales.axios';
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const dispatch = useDispatch();
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const dispatch = useDispatch();
   const [client, setClient] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleOpenModal = useCallback(() => {
-    setIsModalOpen(true);
-  }, []);
+  // const handleOpenModal = useCallback(() => {
+  //   setIsModalOpen(true);
+  // }, []);
 
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
+  // const handleCloseModal = useCallback(() => {
+  //   setIsModalOpen(false);
+  // }, []);
 
-  const removeItem = useCallback((id) => {
-    dispatch(removeFromCart(id));
-  }, [dispatch]);
+  // const removeItem = useCallback((id) => {
+  //   dispatch(removeFromCart(id));
+  // }, [dispatch]);
   const userId = JSON.parse(localStorage.getItem('user')).id;
 
   const handleCreateSale = async () => {
@@ -43,7 +43,7 @@ const Cart = () => {
       // Guarda el saleId en el localStorage para usarlo en Checkout
       localStorage.setItem('saleId', saleId);
       
-      navigate('/checkout'); // Redirigir a la página de checkout
+      navigate(`/ventas/details/${saleId}`); // Redirigir a la página de checkout
     } catch (err) {
       setError('Error al crear la venta');
     }
@@ -61,15 +61,15 @@ const Cart = () => {
           onChange={(e) => setClient(e.target.value)} 
         />
         {error && <p className="text-red-500">{error}</p>}
-        <p>Total Items:<strong> {cart.totalQuantity}</strong></p>
-        <p>Total Precio:<strong> ${cart.totalAmount.toFixed(2)}</strong></p>
+        {/* <p>Total Items:<strong> {cart.totalQuantity}</strong></p>
+        <p>Total Precio:<strong> ${cart.totalAmount.toFixed(2)}</strong></p> */}
         <div className='flex flex-1 flex-col gap-2'>
-          <button onClick={handleOpenModal} className='px-4 py-2 bg-blue-300 w-1/5 rounded-xl text-white font-semibold'>Ver detalles</button>
+          {/* <button onClick={handleOpenModal} className='px-4 py-2 bg-blue-300 w-1/5 rounded-xl text-white font-semibold'>Ver detalles</button> */}
           <button onClick={handleCreateSale} className='px-4 py-2 bg-green-600 w-1/5 rounded-xl text-white font-semibold'>Comprar</button>
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Modal
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
@@ -85,7 +85,7 @@ const Cart = () => {
             </ul>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

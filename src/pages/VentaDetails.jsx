@@ -90,7 +90,7 @@ const VentaDetails = () => {
   return (
     <div className='max-w-[800px] m-auto'>
       <div className='flex flex-row items-center justify-between mb-4'>
-        <h3>Finalizar orden de compra de {venta.client} - {new Date(venta.createdAt).toLocaleString()}</h3>
+        <h3>Finalizar orden de compra de {venta[0].client} - {new Date(venta[0].createdAt).toLocaleString()} - {venta[0].paymentStatus === 'PAID' ? 'PAGADA' : venta[0].paymentStatus === 'PENDING' ? 'Pendiente' : 'Fiado'}</h3>
       </div>
       <form onSubmit={handleSubmit}>
         <div className='mb-4'>
@@ -158,7 +158,8 @@ const VentaDetails = () => {
             className='border-2 border-gray-300 rounded-lg p-2 w-full'
             value={formData.paymentStatus}
             onChange={handleChange}
-          >
+          > 
+            <option value="">Seleccionar estado</option>
             <option value="PENDING">Pendiente</option>
             <option value="PAID">Pagado</option>
             <option value="CREDIT">Fiado</option>

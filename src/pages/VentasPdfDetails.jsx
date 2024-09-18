@@ -24,27 +24,27 @@ const VentasPdfDetails = () => {
         };
         fetchVenta();
     }, [id]);
-    localStorage.setItem('saleId', id)
     // Destructuring firstVenta directly in return statement to avoid unnecessary variable assignment
-    const { createdAt, total, client, user, saleDetailsProducts } = venta[0] || {};
+    const {  createdAt, total, client, user, saleDetailsProducts, paymentStatus, paymentMethod } = venta[0] || {};
 
     // Refactored generatePDF function: extracted PDF creation logic for better readability
     const generatePDF = () => {
         const doc = new jsPDF();
-
+    
         doc.setFontSize(18);
-        doc.text('Detalle de la Venta', 14, 22);
-
+        doc.text(`Detalle de la Venta ${id}`, 14, 16);
+    
         doc.setFontSize(14);
-        doc.text(`Fecha: ${formatDate(createdAt)}`, 14, 40);
-        doc.text(`Total: ${total === 0 ? 'Nada que mostrar' : total}`, 14, 50);
-
+        doc.text(`Fecha: ${formatDate(createdAt)}`, 14, 24);
+    
         doc.setFontSize(12);
-        doc.text(`Cliente: ${client}`, 14, 60);
-        doc.text(`Vendedor: ${user?.name || 'No disponible'}`, 14, 70);
-
+        doc.text(`Cliente: ${client}`, 14, 30);
+        doc.text(`Estado de Pago: ${paymentStatus==='CREDIT'?'Fiado':paymentStatus==='PAID'?'Pagada': 'Pendiente'}`, 14,35);
+        doc.text(`Método de Pago: ${paymentMethod==='CASH'?'Efectivo':paymentMethod==='CURRENT_ACCOUNT'?'Fiado':paymentMethod==='CREDIT_CARD'?'Tarjeta de Credito': paymentMethod==='DEBIT_CARD'?'Tarjeta de Debito':paymentMethod==='QR'? 'QR': paymentMethod==='TRANSFER'?'TRASNFERENCIA':'Pendiente'}`, 14, 40);
+        doc.text(`Vendedor: ${user?.name || 'No disponible'}`, 14, 45);
+    
         if (saleDetailsProducts && saleDetailsProducts.length > 0) {
-            const tableColumn = ["Producto", "Descripción", "Cantidad", "Precio Unitario", "Precio Total", "Unida de Medida"];
+            const tableColumn = ["Producto", "Descripción", "Cantidad", "Precio Unitario", "Precio Total", "Unidad de Medida"];
             const tableRows = saleDetailsProducts.map(product => [
                 product.product.name,
                 product.description || '', // Use empty string as fallback for description
@@ -53,22 +53,36 @@ const VentasPdfDetails = () => {
                 product.totalPrice,
                 product.product.unitMeasure,
             ]);
+            const totalText = total === 0 ? 'Nada que mostrar' :total;
 
+            // Add total row
+            const totalRow = [
+                'Total de la compra',
+                '',
+                '',
+                '',
+                ` $${totalText}`, // Total text
+                '', // Empty cell for Unidad de Medida
+              ]
+    
             doc.autoTable({
                 head: [tableColumn],
-                body: tableRows,
-                startY: 80,
+                body: [...tableRows, totalRow], // Append total row to the table rows
+                startY: 60,
                 theme: 'grid',
                 headStyles: { fillColor: [41, 87, 141] },
                 styles: { fontSize: 10 },
                 margin: { top: 10 }
             });
+        } else {
+            doc.text('No hay productos para mostrar', 14, 60);
         }
-
+    
         const pdfBlob = doc.output('blob');
         setPdfData(URL.createObjectURL(pdfBlob));
         setIsModalOpen(true);
     };
+    
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -93,7 +107,10 @@ const VentasPdfDetails = () => {
             <div className='flex flex-col gap-4 mt-4 w-1/2'>
 
             <button onClick={generatePDF} className='text-lg font-semibold px-4 py-1 text-white bg-green-500 rounded-full'>Generar PDF</button>
-            <Link to='/checkout' className=' text-center text-lg font-semibold px-4 py-1 text-white bg-blue-500 rounded-full'>Agregar productos</Link>
+            {
+                paymentStatus==='PENDING' ?  <Link to={`/ventas/details/${id}`} className=' text-center text-lg font-semibold px-4 py-1 text-white bg-blue-500 rounded-full'>Agregar productos</Link> : null
+           
+            }
             </div>
             <Modal
                 isOpen={isModalOpen}

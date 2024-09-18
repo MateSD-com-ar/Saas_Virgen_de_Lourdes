@@ -138,3 +138,30 @@ export const deleteSale = async(id)=>{
         console.log(error)
     }
 }
+
+
+export const updateDetailsSale = async(id, data)=>{
+    try {
+        const response = await axios.put(`${url}details/update/${id}`,data,{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const deleteDetailsSale = async(id)=>{
+    try {
+        const response = await axios.delete(`${url}details/delete/${id}`,{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        console.log(error)
+    }
+}
