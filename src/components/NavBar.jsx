@@ -7,13 +7,8 @@ import { logout } from '../redux/slices/authSlice';
 const NavBar = () => {
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart);
-  const [user, setUser] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
-    setUser(userData);
-  }, [cart.totalQuantity]);
+  const user = useSelector(state => state.auth.user); // Asegúrate de que la información del usuario esté en el estado global
+  const [isAdmin, setIsAdmin] = useState(user?.role === 'ADMIN');
 
   useEffect(() => {
     setIsAdmin(user?.role === 'ADMIN');
@@ -21,48 +16,57 @@ const NavBar = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    setUser(null);
-    setIsAdmin(false);
     localStorage.removeItem('user');
   };
 
   return (
-    <div className='bg-slate-950/5 text-black flex flex-col lg:flex-row lg:justify-between gap-4 px-4 py-2 items-center w-full m-auto h-auto lg:h-16'>
-      {/* User Info */}
-      <p className='text-sm'>{user?.name}</p>
+    <nav className='bg-slate-500 text-white flex  flex-col justify-between gap-4 px-4 py-2 items-center w-full m-auto h-auto lg:h-16'>
+      {/* Mobile Menu Toggle Button */}
+     
+      <div>
 
       {/* Navigation Links */}
-      <div className='flex flex-1 flex-row items-center gap-4 justify-center lg:justify-start'>
-        <Link to='/cart' className='hidden lg:flex gap-1 bg-green-500 text-white px-4 py-1 rounded-full font-semibold'>
+      <div className='flex flex-row items-center gap-4 lg:gap-6'>
+        <Link to='/cart' className='bg-green-500 text-white  lg:px-4 lg:py-2 p-1  rounded-full font-semibold hover:bg-green-600'>
           Iniciar Venta
         </Link>
+        <div className='flex gap-1'>
 
         {isAdmin && (
-          <Link to='/admin' className='px-4 py-1 bg-orange-500 text-white font-medium rounded-full'>
+          <Link to='/admin' className='bg-orange-500 text-white lg:px-4 lg:py-2 p-1 rounded-full font-medium hover:bg-orange-600'>
             ADMIN
           </Link>
         )}
-        <button onClick={handleLogout} className='px-4 py-1 bg-red-700 text-white font-medium rounded-full'>
+        <button onClick={handleLogout} className='bg-red-700 text-white lg:px-4 lg:py-2 p-1 rounded-full font-medium hover:bg-red-800'>
           SALIR
         </button>
+        </div>
       </div>
-
-      {/* Mobile Navigation Links */}
-      <div className='block lg:hidden flex flex-row items-center gap-4'>
-        <Link to='/cart' className='flex gap-1 bg-green-500 text-white px-4 py-1 rounded-full font-semibold'>
-          Iniciar Venta
-        </Link>
       </div>
-
-      {/* Nav Links */}
-      <div className='flex flex-col lg:flex-row gap-4 px-4 mt-2 lg:mt-0'>
+      <div className='lg:hidden flex items-center'>
+        <button className='text-white text-2xl' onClick={() => document.getElementById('mobile-menu').classList.toggle('hidden')}>
+          &#9776;
+        </button>
+      </div>
+      {/* Nav Links for Desktop */}
+      <div className='hidden lg:flex flex-row items-center gap-4 lg:gap-6'>
         {NavLinks.map((link, index) => (
           <Link key={index} to={link.path} className='hover:text-orange-500'>
             {link.name}
           </Link>
         ))}
       </div>
-    </div>
+
+      {/* Mobile Nav Menu */}
+      <div id='mobile-menu' className='lg:hidden hidden flex-col items-center gap-4 mt-4'>
+        {NavLinks.map((link, index) => (
+          <Link key={index} to={link.path} className='text-lg  px-1 hover:text-orange-500'>
+            {link.name}
+          </Link>
+        ))}
+      </div>
+     
+    </nav>
   );
 };
 
