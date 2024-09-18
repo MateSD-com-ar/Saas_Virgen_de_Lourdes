@@ -35,17 +35,17 @@ const Cart = () => {
   return (
     <div>
       <div className='w-4/6 m-auto'>
-        <h1>Venta</h1>
+        <h1  className='text-xl font-semibold mb-2 px-3'>Venta</h1>
         <input 
           type="text" 
           placeholder='Nombre cliente' 
           value={client}
-          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : ''}`}
+          className={`${error ? 'border-red-500 border-2 rounded-full px-3 py-[1px]' : 'border rounded-full px-3 py-[1px]'}`}
           onChange={(e) => setClient(e.target.value)} 
         />
         {error && <p className="text-red-500">{error}</p>} 
-        <div className='flex flex-1 flex-col gap-2'>
-          <button onClick={handleCreateSale} className='px-4 py-2 bg-green-600 w-1/5 rounded-xl text-white font-semibold'>Comprar</button>
+        <div className='flex flex-1 flex-col px-3 pt-2'>
+          <button onClick={handleCreateSale} className='px-4 py-2 bg-green-600 w-1/5 rounded-xl text-white font-semibold '>Comprar</button>
         </div>
       </div>
     </div>

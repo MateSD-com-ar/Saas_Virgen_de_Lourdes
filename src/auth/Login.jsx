@@ -29,7 +29,7 @@ const Login = () => {
 
       if (accessToken) {
         dispatch(login({ token: accessToken, user })); // Adjust payload structure
-         navigate('/checkout');
+         navigate('/cart');
       } else {
         throw new Error('No token received');
       }
