@@ -98,7 +98,7 @@ const Checkout = () => {
         }))
       ];
       await createSaleDetails(saleDetailsProducts);
-        navigate(`/venta/${id}`);
+        window.location.href=`/venta/${id}`
       localStorage.removeItem('cartItems');
     } catch (err) {
       setError('Error creating sale or sale details');
@@ -121,12 +121,13 @@ const Checkout = () => {
   }
 
   return (
-    <div className='max-w-[800px] m-auto pt-5'>
+    <div className='lg:max-w-[1100px] px-4 pt-5 m-auto'>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-        <div className='flex flex-row justify-between items-center'>
-          <button type="submit" className='bg-green-500 text-white px-4 py-1 rounded-full font-semibold w-40'>Cerrar Venta</button>
+        <div className='flex flex-wrap justify-between items-center'>
+          <button type="submit" className='bg-green-500 text-white px-4 py-1 rounded-full font-semibold w-full md:w-40'>Cerrar Venta</button>
         </div>
-        <div className='mt-6'>
+
+        <div className='mt-6 overflow-x-auto'>
           <h3 className='text-xl font-semibold mb-2'>Productos en el carrito</h3>
           <table className='min-w-full bg-white border border-gray-200'>
             <thead>
@@ -142,16 +143,8 @@ const Checkout = () => {
                 <tr key={index} className='border-b'>
                   <td className='py-2 px-4 capitalize'>{item.product.name}</td>
                   <td className='py-2 px-4 capitalize'>{item.product.brand}</td>
-                  <td className='py-2 px-4'>{item.quantity}
-                  {/* <input
-  type="number"
-  name="quantity"
-  value={item.quantity} // Muestra el valor actual del estado
-  onChange={(e) => handleInputChange(e, index, 'cart')}
-  className='border px-2 py-1 rounded w-full'
-/> */}
-                  </td>
                   <td className='py-2 px-4'>${item.product.price}</td>
+                  <td className='py-2 px-4'>{item.quantity}</td>
                   <td className='py-2 px-4'>
                     <button type="button" onClick={() => deleteDetails(item.id)} className='text-red-500 font-semibold'>Eliminar</button>
                   </td>
@@ -160,16 +153,17 @@ const Checkout = () => {
             </tbody>
           </table>
         </div>
-        <h3>Agregar productos adicionales</h3>
+
+        <h3 className='text-center'>Agregar productos adicionales</h3>
         {additionalProducts.map((product, index) => (
-          <div key={index} className='flex flex-1 gap-2'>
+          <div key={index} className='flex flex-col md:flex-row gap-2 w-full'>
             <input
               type="text"
               name="name"
               placeholder="Nombre del producto"
               value={product.name}
               onChange={(e) => handleInputChange(e, index, 'additional')}
-              className='border-2 px-4 py-2 rounded-full'
+              className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
             />
             <input
               type="text"
@@ -177,7 +171,7 @@ const Checkout = () => {
               placeholder="Descripción"
               value={product.brand}
               onChange={(e) => handleInputChange(e, index, 'additional')}
-              className='border-2 px-4 py-2 rounded-full'
+              className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
             />
             <input
               type="number"
@@ -185,7 +179,7 @@ const Checkout = () => {
               placeholder="Precio"
               value={product.price}
               onChange={(e) => handleInputChange(e, index, 'additional')}
-              className='border-2 px-4 py-2 rounded-full'
+              className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
             />
             <input
               type="number"
@@ -193,14 +187,14 @@ const Checkout = () => {
               placeholder="Cantidad"
               value={product.quantity}
               onChange={(e) => handleInputChange(e, index, 'additional')}
-              className='border-2 px-4 py-2 rounded-full'
+              className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
             />
-            <button type="button" onClick={() => removeProduct(index)} className='px-4 py-1 bg-red-700 text-white font-medium rounded-full'>Eliminar</button>
+            <button type="button" onClick={() => removeProduct(index)} className='px-4 py-1 bg-red-700 text-white font-medium rounded-full w-full md:w-auto'>Eliminar</button>
           </div>
         ))}
 {/*importenate no borrar */}
-        <h3>Agregar más productos de verdulería o carnicería</h3>
-        <div className='flex flex-row gap-4'>
+       
+        <div className='flex flex-row gap-4 py-4'>
           {initialAdditionalProducts.map((product, index) => (
             <button
               key={index}
@@ -216,7 +210,7 @@ const Checkout = () => {
           ))}
         </div>
       </form>
-      <div className="w-full bg-gray-100 p-4 border-l-2 border-gray-300">
+      <div className="w-full bg-gray-100 p-4 border-2 border-gray-300">
         <h3>Buscar productos en almacén</h3>
         <input
           type="text"

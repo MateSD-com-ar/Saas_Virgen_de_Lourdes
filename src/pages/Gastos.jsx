@@ -33,10 +33,12 @@ const Gastos = () => {
 
 
   return (
-    <section className='max-w-[800px] m-auto flex flex-col gap-4 pt-4'>
+    <section className='max-w-[800px] m-auto flex flex-col items-center justify-center gap-4 pt-4'>
       <Link to='./create' className='text-lg font-semibold px-4 py-1 text-white bg-green-500 rounded-xl w-36'>Cargar Gasto</Link>
-      Gastos:
-      <div className='flex flex-wrap gap-2'>
+      <h2 className='text-2xl font-semibold'>
+        Gastos:
+        </h2>
+      <div className='flex flex-wrap items-center justify-center gap-2'>
         {error && <p>{error}</p>}
       {gastos && gastos.map((gasto, index) => (
           <div key={index} className='border rounded-xl px-4 py-2 gap-4 flex flex-col'>
@@ -47,7 +49,7 @@ const Gastos = () => {
           <p>Gasto: {gasto.reason}</p>
           <p>Importe: {gasto.amountMoney}</p>
             </div>
-            <div>
+          <div className='flex flex-1 gap-2 lg:flex-row flex-col'>
 
           <Link to={`/gastos/edit/${gasto.idExpenditure}`} className='bg-blue-500 text-white px-4 py-1 text-center font-semibold  rounded-lg hover:bg-blue-600'>Editar</Link>
           <button onClick={() => handleDeleteEXpenditure(gasto.idExpenditure)} className='bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600'>Eliminar</button>

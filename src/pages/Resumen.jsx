@@ -97,8 +97,8 @@ const Resumen = () => {
 
   const handleDateChange = e => setSelectedDate(e.target.value);
 
-  if (loading) return <div className='w-[800px] m-auto'>Loading...</div>;
-  if (error) return <div className='w-[800px] m-auto'>Error: {error.message}</div>;
+  if (loading) return <div className='w-full max-w-screen-lg mx-auto p-4'>Loading...</div>;
+  if (error) return <div className='w-full max-w-screen-lg mx-auto p-4'>Error: {error.message}</div>;
 
   const { dailySales, dailyGastos, totalSales, totalGastos, totalEgresos, paymentStatusData } = salesData;
 
@@ -163,18 +163,24 @@ const Resumen = () => {
   };
 
   return (
-    <div className='w-[900px] m-auto'>
-      <div className='flex flex-row items-center justify-between gap-4'>
-        <div className='border-2 rounded-xl p-2 h-full'>
-          <h2>Resumen de ventas diarias y egresos totales:</h2>
+    <div className='w-full max-w-screen-lg mx-auto p-4'>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <div className='border-2 rounded-xl p-4'>
+          <h2 className='text-xl font-semibold mb-2'>Resumen de ventas diarias y egresos totales:</h2>
           <p>Ventas total: ${totalSales}</p>
           <p>Egresos total: ${totalGastos}</p>
           <p>Total: ${totalEgresos}</p>
         </div>
-        <div className='border-2 rounded-xl p-2 h-full'>
-          <div className='flex flex-row items-center gap-2'>
-            <h2>Fecha: </h2>
-            <input type='date' value={selectedDate} onChange={handleDateChange} />
+        <div className='border-2 rounded-xl p-4'>
+          <div className='flex flex-col gap-2 mb-4'>
+            <label htmlFor='date' className='text-lg font-semibold'>Fecha:</label>
+            <input
+              id='date'
+              type='date'
+              value={selectedDate}
+              onChange={handleDateChange}
+              className='border px-2 py-1 rounded-lg'
+            />
           </div>
           <div>
             <p>Ventas del día: ${totalDailySales}</p>
@@ -183,14 +189,14 @@ const Resumen = () => {
           </div>
         </div>
       </div>
-      <div className='flex flex-row justify-center gap-4'>
-        <div className='mt-8'>
+      <div className='mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+        <div className='w-full'>
           <Bar data={barChartData} options={options} />
         </div>
-        <div className='mt-8'>
+        <div className='w-full'>
           <Bar data={paymentStatusChartData} options={paymentStatusOptions} />
         </div>
-        <div className='mt-8 w-[420px] h-[420px]'>
+        <div className='w-full h-[300px] md:h-[420px] lg:h-[500px]'>
           <Pie data={paymentStatusChartData} options={paymentStatusOptions} />
         </div>
       </div>

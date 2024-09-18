@@ -34,7 +34,7 @@ const Cart = () => {
 
   return (
     <div>
-      <div className='w-4/6 m-auto'>
+      <div className='flex flex-col items-center gap-2 lg:w-4/6 m-auto'>
         <h1  className='text-xl font-semibold mb-2 px-3'>Venta</h1>
         <input 
           type="text" 
@@ -44,9 +44,8 @@ const Cart = () => {
           onChange={(e) => setClient(e.target.value)} 
         />
         {error && <p className="text-red-500">{error}</p>} 
-        <div className='flex flex-1 flex-col px-3 pt-2'>
+        
           <button onClick={handleCreateSale} className='px-4 py-2 bg-green-600 w-1/5 rounded-xl text-white font-semibold '>Comprar</button>
-        </div>
       </div>
     </div>
   );

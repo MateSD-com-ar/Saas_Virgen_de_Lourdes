@@ -29,6 +29,7 @@ const Ventas = () => {
     };
     fetchVentas();
   }, []);
+
   const handleDelete = async (id) => {
     const confirmed = window.confirm("¿Estás seguro de que quieres eliminar esta venta?");
     if (confirmed) {
@@ -40,7 +41,6 @@ const Ventas = () => {
       }
     }
   };
-  
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -51,21 +51,21 @@ const Ventas = () => {
   );
 
   return (
-    <div className='w-[900px] m-auto p-2'>
-      <div className='flex flex-1 items-center justify-between pb-10'>
-        <h2 className='text-2xl font-serif font-bold'>Ventas</h2>
+    <div className='w-full max-w-4xl mx-auto p-2'>
+      <div className='flex flex-col lg:flex-row items-center justify-between pb-10'>
+        <h2 className='text-2xl font-serif font-bold'>VENTAS</h2>
         <TextField
           label='Buscar Ventas'
           variant='outlined'
           onChange={handleSearch}
           value={search}
-          className='w-1/2'
+          className='w-full lg:w-1/2 my-4 lg:my-0'
         />
       </div>
       {loading && <p>Loading...</p>}
       {error && <p> {error}</p>}
       {!loading && !error && (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} className='overflow-x-auto'>
           <Table>
             <TableHead>
               <TableRow>
@@ -98,14 +98,13 @@ const Ventas = () => {
                     </TableCell>
                     <TableCell>
                       <Link to={`/venta/${sale.id}`} className='text-lg font-semibold px-4 py-1 text-white bg-green-500 rounded-full'>
-                       Estado
+                        Estado
                       </Link>
                     </TableCell>
                     <TableCell>
                       <button onClick={() => handleDelete(sale.id)} className='text-lg font-semibold px-4  text-white bg-red-500 rounded-full'>
                         Eliminar
                       </button>
-                     
                     </TableCell>
                   </TableRow>
                 )

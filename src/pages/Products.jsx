@@ -58,8 +58,8 @@ const Products = () => {
   }
 
   return (
-    <div className='max-w-[800px] m-auto'>
-      <div className='flex flex-row items-center justify-between mb-4'>
+    <div className='lg:max-w-[800px] m-auto'>
+      <div className='flex flex-col lg:flex-row items-center justify-between mb-4'>
         <h2>PRODUCTOS DE ALMACEN</h2>
         <input
           type="text"
@@ -68,7 +68,7 @@ const Products = () => {
           onChange={onSearchChange}
         />
       </div>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap lg:items-center justify-center px-4 gap-4">
         {filteredProducts.length > 0 ? filteredProducts.map(product => (
           <div key={product.idProduct} className="border-2 border-solid border-black p-2 my-2 rounded-lg">
             <h3><strong>Producto:</strong> {product.name}</h3>

@@ -66,9 +66,9 @@ const Admin = () => {
   };
 
   return (
-    <div className='flex flex-col flex-1 max-w-[1100px] m-auto'>
+    <div className='flex flex-col items-center max-w-[1100px] m-auto'>
       <h1 className='text-2xl font-bold'>Administrador</h1>
-      <div className='mb-4'>
+      <div className='mb-4 flex flex-col lg:flex-row items-center'>
         <Link to='/empleados' className='text-blue-500 hover:underline mr-4'>Ver Empleados</Link>
         <Link to='/producto/create/' className='text-blue-500 hover:underline mr-4'>Cargar Producto</Link>
         <Link to='/resumen/' className='text-blue-500 hover:underline mr-4'>Resumen</Link>
