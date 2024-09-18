@@ -3,7 +3,6 @@ import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { login } from '../redux/slices/authSlice';
 import { authLogin } from '../axios/auth';
-import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -11,7 +10,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleUsernameChange = (e) => setUsername(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -28,8 +26,8 @@ const Login = () => {
       const { accessToken, user } = response;
 
       if (accessToken) {
-        dispatch(login({ token: accessToken, user })); // Adjust payload structure
-         navigate('/cart');
+        dispatch(login({ token: accessToken, user }));// Adjust payload structure
+        window.location.href = '/cart';
       } else {
         throw new Error('No token received');
       }

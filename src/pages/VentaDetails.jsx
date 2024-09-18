@@ -50,7 +50,7 @@ const VentaDetails = () => {
 
     // Validación si el método de pago es CURRENT_ACCOUNT
     if (paymentMethod === 'CURRENT_ACCOUNT' && (!interest || !paymentStatus || !cuil)) {
-      alert('Todos los campos son obligatorios cuando el método de pago es Cuenta Corriente con Crédito');
+      alert('Todos el INTERES es obligatorio cuando el método de pago es Cuenta Corriente (FIADO) ');
       return;
     }
 
