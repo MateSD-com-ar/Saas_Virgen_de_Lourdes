@@ -20,7 +20,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className='bg-slate-500 text-white flex  flex-col justify-between gap-4 px-4 py-2 items-center w-full m-auto h-auto lg:h-16'>
+    <nav className='bg-slate-500 text-white flex  flex-col lg:flex-row justify-between gap-4 px-4 py-2 items-center w-full m-auto h-auto lg:h-16'>
       {/* Mobile Menu Toggle Button */}
      
       <div>
