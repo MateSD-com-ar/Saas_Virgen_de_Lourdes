@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const VentaDetails = () => {
   const { id } = useParams();
-  const [venta, setVenta] = useState({});
+  const [venta, setVenta] = useState(null);
   const [formData, setFormData] = useState({
     cuil: '',
     interest: '',
@@ -20,6 +20,8 @@ const VentaDetails = () => {
       try {
         const response = await getSaleDetails(id);
         setVenta(response);
+
+        // Update form data with fetched venta details
         setFormData({
           cuil: response.cuil || '',
           interest: response.interest || '',
@@ -37,7 +39,7 @@ const VentaDetails = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
+    setFormData(prevData => ({
       ...prevData,
       [name]: value,
     }));
@@ -45,19 +47,21 @@ const VentaDetails = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const { cuil, interest, discount, paymentMethod, paymentStatus } = formData;
 
-    // Validación si el método de pago es CURRENT_ACCOUNT
+    // Validation if payment method is CURRENT_ACCOUNT
     if (paymentMethod === 'CURRENT_ACCOUNT' && (!interest || !paymentStatus || !cuil)) {
-      alert('Todos el INTERES es obligatorio cuando el método de pago es Cuenta Corriente (FIADO) ');
+      alert('Todos el INTERES es obligatorio cuando el método de pago es Cuenta Corriente (FIADO)');
+      return;
+    }
+    if (paymentStatus === 'PAID' && !paymentMethod) {
+      alert('El metodo de pago es obligatorio cuando el estado es Pagado');
       return;
     }
 
-    // Crear un objeto solo con los valores que no están vacíos
+    // Create an object only with non-empty values
     const updatedData = {};
 
-    // Si el estado es 'PENDING' solo mandamos ese campo
     if (paymentStatus === 'PENDING') {
       updatedData.paymentStatus = paymentStatus;
     } else {
@@ -65,8 +69,7 @@ const VentaDetails = () => {
       if (discount) updatedData.discount = discount;
       updatedData.paymentMethod = paymentMethod;
       updatedData.paymentStatus = paymentStatus;
-
-      // Si el método de pago es CURRENT_ACCOUNT y el estado es CREDIT, agregar el interés si existe
+      
       if (paymentMethod === 'CURRENT_ACCOUNT' && paymentStatus === 'CREDIT' && interest) {
         updatedData.interest = interest;
       }
@@ -81,7 +84,7 @@ const VentaDetails = () => {
     }
   };
 
-  if (!venta || Object.keys(venta).length === 0) {
+  if (!venta) {
     return <div className='w-full m-auto text-center'>Cargando...</div>;
   }
 
@@ -90,8 +93,14 @@ const VentaDetails = () => {
   return (
     <div className='max-w-[800px] m-auto'>
       <div className='flex flex-row items-center justify-between mb-4'>
-        <h3>Finalizar orden de compra de {venta[0].client} - {new Date(venta[0].createdAt).toLocaleString()} - {venta[0].paymentStatus === 'PAID' ? 'PAGADA' : venta[0].paymentStatus === 'PENDING' ? 'Pendiente' : 'Fiado'}</h3>
+        <h3>
+          Finalizar orden de compra de {venta[0].client} - 
+          {new Date(venta[0].createdAt).toLocaleString()} - 
+          {venta[0].paymentStatus === 'PAID' ? 'PAGADA' : 
+            venta[0].paymentStatus === 'PENDING' ? 'Pendiente' : 'Fiado'}
+        </h3>
       </div>
+
       <form onSubmit={handleSubmit}>
         <div className='mb-4'>
           <label htmlFor="cuil" className='block'>CUIL:</label>
@@ -105,7 +114,6 @@ const VentaDetails = () => {
           />
         </div>
 
-        {/* Input for Interest */}
         <div className='mb-4'>
           <label htmlFor="interest" className='block'>Interés:</label>
           <input
@@ -168,7 +176,7 @@ const VentaDetails = () => {
 
         <button
           type="submit"
-          className='text-lg font-semibold px-4 py-2 text-white bg-blue-500 rounded-xl'
+          className=' text-lg font-semibold px-4 py-2 text-white bg-blue-500 rounded-xl'
         >
           FINALIZAR
         </button>

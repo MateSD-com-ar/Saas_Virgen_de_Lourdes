@@ -133,8 +133,8 @@ const Checkout = () => {
               <tr className='border-b'>
                 <th className='py-2 px-4 text-left'>Nombre</th>
                 <th className='py-2 px-4 text-left'>Marca</th>
-                <th className='py-2 px-4 text-left'>Cantidad</th>
                 <th className='py-2 px-4 text-left'>Precio</th>
+                <th className='py-2 px-4 text-left'>Cantidad</th>
               </tr>
             </thead>
             <tbody>

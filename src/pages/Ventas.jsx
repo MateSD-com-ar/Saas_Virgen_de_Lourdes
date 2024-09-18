@@ -75,7 +75,7 @@ const Ventas = () => {
                 <TableCell>Estado</TableCell>
                 <TableCell>Creada</TableCell>
                 <TableCell>Detalles</TableCell>
-                <TableCell>Finalizar</TableCell>
+                <TableCell>Estado</TableCell>
                 <TableCell>Eliminar</TableCell>
               </TableRow>
             </TableHead>
@@ -92,7 +92,7 @@ const Ventas = () => {
                     <TableCell>{sale.client}</TableCell>
                     <TableCell>{sale.total}</TableCell>
                     <TableCell>{sale.paymentStatus === 'PAID' ? 'PAGADA' : sale.paymentStatus === 'PENDING' ? 'Pendiente' : 'Fiado'}</TableCell>
-                    <TableCell>{new Date(sale.createdAt).toLocaleString()}</TableCell>
+                    <TableCell>{sale.createdAt}</TableCell>
                     <TableCell>
                       <Link to={`/venta/details/${sale.id}`} className='text-lg font-semibold px-4 py-1 h-auto text-white bg-blue-500 rounded-full'>Detalles</Link>
                     </TableCell>
