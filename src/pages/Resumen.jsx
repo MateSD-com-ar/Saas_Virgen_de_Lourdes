@@ -39,22 +39,27 @@ const Resumen = () => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0]
   );
-
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const [salesRes, gastosRes] = await Promise.all([getAllSales(), getGastos()]);
-
+      const [salesRes, gastosRes] = await Promise.all([
+        getAllSales(),
+        getGastos().catch(err => {
+          console.error("No se encontraron gastos:", err);
+          return []; // Si no hay gastos, devuelve un array vacío
+        }),
+      ]);
+  
       const totalSales = salesRes.reduce((acc, sale) => acc + sale.total, 0);
       const totalGastos = gastosRes.reduce((acc, gasto) => acc + gasto.amountMoney, 0);
       const totalEgresos = totalSales - totalGastos;
-
+  
       const paymentStatusData = salesRes.reduce((acc, sale) => {
         const status = sale.paymentStatus || 'unknown';
         acc[status] = (acc[status] || 0) + sale.total;
         return acc;
       }, {});
-
+  
       setSalesData({
         sales: salesRes,
         gastos: gastosRes,
@@ -65,15 +70,15 @@ const Resumen = () => {
         totalEgresos,
         paymentStatusData,
       });
-
+  
       setLoading(false);
     } catch (err) {
-      console.error(err);
+      console.error("Error al cargar los datos:", err);
       setError(err);
       setLoading(false);
     }
   }, []);
-
+  
   useEffect(() => {
     fetchData();
   }, [fetchData]);
