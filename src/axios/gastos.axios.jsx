@@ -2,22 +2,21 @@ import axios from 'axios'
 import { url } from '../utils/utils'
 
 export const getGastos = async () => {
-    try {
-      const response = await axios.get(`${url}expenditure/get`, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      return response.data;
-    } catch (error) {
-      if (error.response?.status === 404) {
-        return { message: "No se encontraron ventas", data: [] };
-      } else {
-        throw error;
+  try {
+    const response = await axios.get(`${url}expenditure/get`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response?.status === 404) {
+      return []; // Return an empty array if no gastos are found
+    } else {
+      throw error; // Re-throw any other errors
     }
   }
-
+};
 export const createGastos = async(data)=>{
     try {
         const response=await axios.post(`${url}expenditure/create`,data,{
