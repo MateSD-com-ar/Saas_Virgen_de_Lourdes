@@ -1,25 +1,15 @@
-# Fase de construcción
-FROM node:16-alpine as build
+FROM node:alpine
 
-# Establece el directorio de trabajo
-WORKDIR /app
+WORKDIR /SAAS_VIRGEN_DE_LOURDES
 
-# Copia los archivos necesarios e instala dependencias
-COPY package*.json ./
+COPY package*.json .
+
 RUN npm install
 
-# Copia el código fuente y construye la aplicación
 COPY . .
+
 RUN npm run build
 
-# Fase de producción
-FROM nginx:alpine
+EXPOSE 3000
 
-# Copia los archivos de build al directorio que sirve Nginx
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Expone el puerto 80
-EXPOSE 80:80
-
-# Comando por defecto para iniciar Nginx
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm","start"]
