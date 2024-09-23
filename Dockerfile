@@ -1,6 +1,6 @@
 FROM node:alpine
 
-WORKDIR /app
+WORKDIR /SAAS_VIRGEN_DE_LOURDES
 
 COPY package*.json .
 

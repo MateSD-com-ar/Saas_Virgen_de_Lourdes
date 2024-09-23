@@ -46,9 +46,11 @@ function GastosForm() {
       if (id) {
         await updateGastos(id, gasto);
         setSuccess('Gasto actualizado con éxito');
+        window.location.href = '/gastos';
       } else {
         await createGastos(gasto);
         setSuccess('Gasto creado con éxito');
+        window.location.href = '/gastos';
         setGasto({
           typeExpenditure: '',
           reason: '',

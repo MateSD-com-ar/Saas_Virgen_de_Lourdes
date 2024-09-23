@@ -24,6 +24,7 @@ const Gastos = () => {
   const handleDeleteEXpenditure = async (id) => {
     try {
       await deleteGastos(id);
+      window.location.reload();
       fetchData(); // Actualizar la lista de gastos después de eliminar
     } catch (err) {
       console.log(err);
@@ -40,7 +41,7 @@ const Gastos = () => {
         </h2>
       <div className='flex flex-wrap items-center justify-center gap-2'>
         {error && <p>{error}</p>}
-      {gastos && gastos.map((gasto, index) => (
+      {gastos.map((gasto, index) => (
           <div key={index} className='border rounded-xl px-4 py-2 gap-4 flex flex-col'>
             <div>
 

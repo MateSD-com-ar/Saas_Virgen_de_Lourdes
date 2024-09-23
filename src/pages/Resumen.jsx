@@ -12,6 +12,7 @@ import {
   Legend,
   ArcElement,
 } from 'chart.js';
+import { borderRadius } from '@mui/system';
 
 ChartJS.register(
   CategoryScale,
@@ -34,11 +35,16 @@ const Resumen = () => {
     totalEgresos: 0,
     paymentStatusData: {},
   });
+  const [showSales, setShowSales] = useState(true);
+  const [showGastos, setShowGastos] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0]
   );
+  const [totalCreditSales, setTotalCreditSales] = useState(0); // State to hold total credit sales
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -46,23 +52,26 @@ const Resumen = () => {
         getAllSales(),
         getGastos().catch(err => {
           console.error("No se encontraron gastos:", err);
-          return []; // Si no hay gastos, devuelve un array vacío
+          return [];
         }),
       ]);
-  
-      const totalSales = salesRes.reduce((acc, sale) => acc + sale.total, 0);
-      const totalGastos = gastosRes.reduce((acc, gasto) => acc + gasto.amountMoney, 0);
+
+      const salesArray = Array.isArray(salesRes) ? salesRes : [];
+      const gastosArray = Array.isArray(gastosRes) ? gastosRes : [];
+      
+      const totalSales = salesArray.reduce((acc, sale) => acc + sale.total, 0);
+      const totalGastos = gastosArray.reduce((acc, gasto) => acc + gasto.amountMoney, 0);
       const totalEgresos = totalSales - totalGastos;
-  
-      const paymentStatusData = salesRes.reduce((acc, sale) => {
+
+      const paymentStatusData = salesArray.reduce((acc, sale) => {
         const status = sale.paymentStatus || 'unknown';
         acc[status] = (acc[status] || 0) + sale.total;
         return acc;
       }, {});
-  
+
       setSalesData({
-        sales: salesRes,
-        gastos: gastosRes,
+        sales: salesArray,
+        gastos: gastosArray,
         dailySales: [],
         dailyGastos: [],
         totalSales,
@@ -70,7 +79,7 @@ const Resumen = () => {
         totalEgresos,
         paymentStatusData,
       });
-  
+
       setLoading(false);
     } catch (err) {
       console.error("Error al cargar los datos:", err);
@@ -78,13 +87,13 @@ const Resumen = () => {
       setLoading(false);
     }
   }, []);
-  
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
   useEffect(() => {
-    if (salesData.sales.length && salesData.gastos.length) {
+    if (salesData.sales.length || salesData.gastos.length) {
       const filteredDailySales = salesData.sales.filter(sale =>
         sale.createdAt.startsWith(selectedDate)
       );
@@ -97,6 +106,12 @@ const Resumen = () => {
         dailySales: filteredDailySales,
         dailyGastos: filteredDailyGastos,
       }));
+
+      // Calculate total of CREDIT sales for the selected date
+      const totalCredit = filteredDailySales.reduce((total, sale) => {
+        return sale.paymentStatus === 'CREDIT' ? total + sale.total : total;
+      }, 0);
+      setTotalCreditSales(totalCredit);
     }
   }, [selectedDate, salesData.sales, salesData.gastos]);
 
@@ -109,19 +124,30 @@ const Resumen = () => {
 
   const totalDailySales = dailySales.reduce((total, sale) => total + sale.total, 0);
   const totalDailyGastos = dailyGastos.reduce((total, gasto) => total + gasto.amountMoney, 0);
+  console.log(totalDailyGastos)
   const netTotalDaily = totalDailySales - totalDailyGastos;
-
+  
   const barChartData = {
-    labels: ['Ventas del día', 'Gastos del día'],
+    labels: ['Moviminetos del dia'],
     datasets: [
       {
-        label: 'Moviemientos Diarios',
-        data: [totalDailySales, totalDailyGastos],
-        backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)'],
-        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
-        borderWidth: 1,
+        label: 'Ventas',
+        data: showSales ? [totalDailySales] : [0],
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 2,
+        borderRadius:10,
+      
       },
-    ],
+      {
+        label: `Gastos `,
+        data: showGastos ? [totalDailyGastos] : [0],
+        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 2,
+        borderRadius:10,
+      
+      },]
   };
 
   const paymentStatusChartData = {
@@ -153,11 +179,23 @@ const Resumen = () => {
 
   const options = {
     responsive: true,
-    plugins: {
-      legend: { position: 'top' },
-      title: { display: true, text: 'Histórico de Ventas y Gastos' },
+  plugins: {
+    legend: {
+      onClick: (e, legendItem) => {
+        const label = legendItem.text;
+        if (label === 'Ventas') {
+          setShowSales(prev => !prev);
+        } else if (label === 'Gastos') {
+          setShowGastos(prev => !prev);
+        }
+      },
     },
-  };
+    title: {
+      display: true,
+      text: 'Histórico de Ventas y Gastos',
+    },
+  },
+};
 
   const paymentStatusOptions = {
     responsive: true,
@@ -165,6 +203,25 @@ const Resumen = () => {
       legend: { position: 'top' },
       title: { display: true, text: 'Estados de Pagos por Fecha' },
     },
+  };
+
+  const handlePaymentStatusChange = (e) => {
+    const selectedStatus = e.target.value;
+    if (selectedStatus === '') {
+      setFilteredData([]);
+    } else {
+      const filteredSales = salesData.sales.filter((sale) => sale.paymentStatus === selectedStatus);
+      setFilteredData(filteredSales);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   return (
@@ -175,6 +232,9 @@ const Resumen = () => {
           <p>Ventas total: ${totalSales}</p>
           <p>Egresos total: ${totalGastos}</p>
           <p>Total: ${totalEgresos}</p>
+          <strong>
+            <p>Total de ventas "FIADAS" del día: ${totalCreditSales}</p> {/* Mostrar total de ventas "CREDIT" */}
+            </strong>
         </div>
         <div className='border-2 rounded-xl p-4'>
           <div className='flex flex-col gap-2 mb-4'>
@@ -194,15 +254,43 @@ const Resumen = () => {
           </div>
         </div>
       </div>
-      <div className='mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-        <div className='w-full'>
-          <Bar data={barChartData} options={options} />
+      <div className='flex flex-wrap gap-2 justify-center'>
+        <div className='mt-8 flex flex-col justify-center items-center md:flex-row gap-4 w-full  border border-black rounded-3xl py-4'>
+         <div className="w-full xl:w-1/2">
+
+            <Bar data={barChartData} options={options} />
+         </div>
+
+        <div className="w-full xl:w-1/2">
+            <Bar data={paymentStatusChartData} options={paymentStatusOptions} />
         </div>
-        <div className='w-full'>
-          <Bar data={paymentStatusChartData} options={paymentStatusOptions} />
+        <div className="w-full xl:w-1/2">
+            <Pie data={paymentStatusChartData} options={paymentStatusOptions} />
+          </div>
+
+         
         </div>
-        <div className='w-full h-[300px] md:h-[420px] lg:h-[500px]'>
-          <Pie data={paymentStatusChartData} options={paymentStatusOptions} />
+        
+        <div className='mt-8  w-full flex flex-col gap-2'>
+          <h3 className='text-lg font-semibold'>Ventas por Estado de Pago:</h3>
+          <p>Total:{}</p>
+          <select onChange={handlePaymentStatusChange} className='border px-2 py-1 rounded-lg'>
+            <option value=''>Todos</option>
+            <option value='PAID'>Pagada</option>
+            <option value='PENDING'>Pendiente</option>
+            <option value='CREDIT'>Fiado</option>
+          </select>
+          <div className='h-64 overflow-y-scroll'>
+            {filteredData.map((sale, index) => (
+              <div key={index} className='border p-2 my-2 rounded-lg'>
+                <p>Venta ID: {sale.id}</p>
+                <p>Cliente: {sale.client}</p>
+                <p>Estado: {sale.paymentStatus === 'PAID' ? 'PAGADA' : sale.paymentStatus === 'PENDING' ? 'Pendiente' : 'Fiado'}</p>
+                <p>Total: ${sale.total}</p>
+                <p>Fecha: {formatDate(sale.createdAt)}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

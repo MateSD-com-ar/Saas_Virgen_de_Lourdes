@@ -35,63 +35,65 @@ const VentasPdfDetails = () => {
     const { createdAt, total, client, user, saleDetailsProducts, paymentStatus, paymentMethod } = venta[0] || {};
 
     const generatePDF = () => {
-        const doc = new jsPDF();
+        // Definir tamaño personalizado (80mm de ancho y 40mm de alto)
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [44, 55] // Ancho: 80mm, Alto: 40mm
+        });
 
-        doc.setFontSize(18);
-        doc.text(`Detalle de la Venta ${id}`, 14, 16);
+        doc.setFontSize(8); // Ajusta el tamaño de la fuente para que se ajuste al papel pequeño
+        doc.text(`Detalle de Venta ${id}`, 4, 10); // Ajusta la posición del texto
 
-        doc.setFontSize(14);
-        doc.text(`Fecha: ${formatDate(createdAt)}`, 14, 24);
-
-        doc.setFontSize(12);
-        doc.text(`Cliente: ${client}`, 14, 30);
-        doc.text(`Estado de Pago: ${paymentStatus === 'CREDIT' ? 'Fiado' : paymentStatus === 'PAID' ? 'Pagada' : 'Pendiente'}`, 14, 35);
-        doc.text(`Método de Pago: ${paymentMethod === 'CASH' ? 'Efectivo' : paymentMethod === 'CURRENT_ACCOUNT' ? 'Fiado' : paymentMethod === 'CREDIT_CARD' ? 'Tarjeta de Credito' : paymentMethod === 'DEBIT_CARD' ? 'Tarjeta de Debito' : paymentMethod === 'QR' ? 'QR' : paymentMethod === 'TRANSFER' ? 'TRANSFERENCIA' : 'Pendiente'}`, 14, 40);
-        doc.text(`Vendedor: ${user?.name || 'No disponible'}`, 14, 45);
+        doc.text(`Fecha: ${formatDate(createdAt)}`, 4, 16);
+        doc.text(`Cliente: ${client || 'No disponible'}`, 4, 22);
+        doc.text(`Pago: ${paymentStatus === 'CREDIT' ? 'Fiado' : paymentStatus === 'PAID' ? 'Pagada' : 'Pendiente'}`, 4, 28);
+        doc.text(`Método: ${formatPaymentMethod(paymentMethod)}`, 4, 34);
+        doc.text(`Vendedor: ${user?.name || 'No disponible'}`, 4, 40);
 
         if (saleDetailsProducts && saleDetailsProducts.length > 0) {
-            const tableColumn = ["Producto","Marca", "Descripción", "Cantidad", "Precio Unitario", "Precio Total", "Unidad de Medida"];
+            const tableColumn = ["Producto", "Cant.", "Precio"];
             const tableRows = saleDetailsProducts.map(product => [
                 product.product.name,
-                product.product.brand || '',
-                product.description || '',
                 product.quantity,
-                product.unitPrice,
-                product.totalPrice,
-                product.product.unitMeasure,
+                `$${product.totalPrice}`,
             ]);
-            const totalText = total === 0 ? 'Nada que mostrar' : total;
+            const totalText = total === 0 ? 'Nada que mostrar' : `$${total}`;
 
-            const totalRow = [
-                'Total de la compra',
-                '',
-                '',
-                '',
-                '',
-                ` $${totalText}`,
-                '',
-            ];
-
+            // Añadir la tabla de productos y el total
             doc.autoTable({
                 head: [tableColumn],
-                body: [...tableRows, totalRow],
-                startY: 60,
-                theme: 'grid',
-                headStyles: { fillColor: [41, 87, 141] },
-                styles: { fontSize: 10 },
-                margin: { top: 10 }
+                body: tableRows,
+                startY: 46,
+                theme: 'plain',
+                styles: { fontSize: 6 }, // Ajusta el tamaño de la fuente para la tabla
+                margin: { left: 2, right: 2 }, // Ajusta los márgenes para que quepa en el papel
             });
+
+            // Mostrar el total al final de la tabla
+            doc.text(`Total: ${totalText}`, 4, doc.lastAutoTable.finalY + 6);
         } else {
-            doc.text('No hay productos para mostrar', 14, 60);
+            doc.text('No hay productos', 4, 46);
         }
 
-        // Save the PDF directly
         if (isMobile) {
             doc.save(`venta_${id}.pdf`);
         } else {
             const pdfBlob = doc.output('blob');
             setPdfData(URL.createObjectURL(pdfBlob));
             setIsModalOpen(true);
+        }
+    };
+
+    const formatPaymentMethod = (method) => {
+        switch (method) {
+            case 'CASH': return 'Efectivo';
+            case 'CURRENT_ACCOUNT': return 'Fiado';
+            case 'CREDIT_CARD': return 'Tarjeta de Crédito';
+            case 'DEBIT_CARD': return 'Tarjeta de Débito';
+            case 'QR': return 'QR';
+            case 'TRANSFER': return 'Transferencia';
+            default: return 'Pendiente';
         }
     };
 
