@@ -106,10 +106,12 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    const results = productsAlmacen.filter(product =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredProducts(results);
+    if (productsAlmacen && Array.isArray(productsAlmacen)) {
+      const results = productsAlmacen.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredProducts(results);
+    }
   }, [searchTerm, productsAlmacen]);
 
   if (loading) {

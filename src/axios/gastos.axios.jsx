@@ -11,7 +11,9 @@ export const getGastos = async () => {
     return response.data;
   } catch (error) {
     if (error.response?.status === 404) {
-      return []; // Return an empty array if no gastos are found
+      
+        return { msg: error.response.data.error }; // Return an object with the error message
+       // Return an empty array if no gastos are found
     } else {
       throw error; // Re-throw any other errors
     }
