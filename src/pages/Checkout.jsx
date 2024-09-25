@@ -3,7 +3,7 @@ import { createSaleDetails, getSaleDetails, deleteDetailsSale, updateDetailsSale
 import { getProductsAlmacen } from '../axios/products.axios';
 import { GiCow } from "react-icons/gi";
 import { LuVegan } from "react-icons/lu";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const Checkout = () => {
   const [error, setError] = useState(null);
@@ -13,7 +13,6 @@ const Checkout = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [saleDetail, setSaleDetails] = useState([]);
   const [additionalProducts, setAdditionalProducts] = useState([]);
-  const navigate = useNavigate()
   const { id } = useParams()
   const initialAdditionalProducts = [
     { icon: <LuVegan className='text-xl' />, idProduct: 2, name: "Verduleria", brand: "Verduleria", price: 'price', roleProduct: "Verduleria", unitMeasure: "", stock: 0 },

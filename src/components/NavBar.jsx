@@ -6,7 +6,6 @@ import { logout } from '../redux/slices/authSlice';
 
 const NavBar = () => {
   const dispatch = useDispatch();
-  const cart = useSelector(state => state.cart);
   const user = useSelector(state => state.auth.user); // Asegúrate de que la información del usuario esté en el estado global
   const [isAdmin, setIsAdmin] = useState(user?.role === 'ADMIN');
 

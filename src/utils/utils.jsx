@@ -17,4 +17,4 @@ export  const NavLinks = [
 
  //export const url= "http://vps-4404045-x.dattaweb.com:8081/" 
 
- export const url="http://localhost:8080/"
+ export const url="http://backend.minimercado.site/" 

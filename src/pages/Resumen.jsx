@@ -12,7 +12,6 @@ import {
   Legend,
   ArcElement,
 } from 'chart.js';
-import { borderRadius } from '@mui/system';
 
 ChartJS.register(
   CategoryScale,
