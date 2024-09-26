@@ -3,6 +3,7 @@ import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { login } from '../redux/slices/authSlice';
 import { authLogin } from '../axios/auth';
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -10,6 +11,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleUsernameChange = (e) => setUsername(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -26,7 +28,7 @@ const Login = () => {
       const { accessToken, user } = response;
 
       if (accessToken) {
-        dispatch(login({ token: accessToken, user }));// Adjust payload structure
+        dispatch(login({ token: accessToken, user })); // Adjust payload structure
         window.location.href = '/cart';
       } else {
         throw new Error('No token received');
@@ -38,6 +40,10 @@ const Login = () => {
       setLoading(false);
     }
   }, [username, password, dispatch]);
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className='flex flex-col items-center bg-slate-600 w-full h-screen gap-7'>
@@ -55,21 +61,29 @@ const Login = () => {
           aria-label="Username"
         />
         <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
-          onChange={handlePasswordChange}
-          value={password}
-          aria-required="true"
-          aria-label="Password"
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            id="password"
+            className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'} w-full`}
+            onChange={handlePasswordChange}
+            value={password}
+            aria-required="true"
+            aria-label="Password"
+          />
+          <span
+            className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+            onClick={handleShowPassword}
+          >
+            {showPassword ? <FaRegEye className="text-lg text-black" /> : <FaRegEyeSlash className="text-lg text-black" />}
+          </span>
+        </div>
         <button
           className='px-4 py-2 rounded-full bg-white text-green-800 font-semibold border-2 border-solid hover:bg-slate-500'
           type='submit'
           disabled={loading}
         >
-          {loading ? 'Logging in...' : 'ENTRAR'}
+          {loading ? 'Ingresando...' : 'ENTRAR'}
         </button>
       </form>
     </div>

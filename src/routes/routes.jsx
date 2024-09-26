@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Products from "../pages/Products";
 import Ventas from "../pages/Ventas";
 import NavBar from "../components/NavBar";
 import Login from "../auth/Login";
@@ -23,8 +22,7 @@ const Routers = () => {
       <Routes>
       
         <Route element={<ProtectedRoutes />}> {/* Rutas protegidas */}
-        <Route path="/" element={<Products />} />
-        <Route path="/productos" element={<Products />} />
+        <Route path="/" element={<Ventas />} />
         <Route path="/gastos" element={<Gastos />} />
         <Route path="/gastos/create" element={<GastosForm />} />
         <Route path="/gastos/edit/:id" element={<GastosForm />} />
