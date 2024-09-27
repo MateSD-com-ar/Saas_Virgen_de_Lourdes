@@ -13,6 +13,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # Instalar dependencias para ejecutar las pruebas
+    - name: Install dependencies
+      run: |
+        npm install  # O ajusta esto a tu gestor de dependencias (npm, yarn, pip, etc.)
+
+    # Ejecutar las pruebas
+    - name: Run Tests
+      run: |
+        npm test  # Cambia este comando a lo que uses para ejecutar las pruebas (por ejemplo, pytest, make test, etc.)
+
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v0.1.5
       with:
@@ -25,4 +35,3 @@ jobs:
           git pull origin main  # O 'master', dependiendo de la rama
           cp -f build/* /var/www/minimarket-frontend
           sudo systemctl reload nginx
-          
