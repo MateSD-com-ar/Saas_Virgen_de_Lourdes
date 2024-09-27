@@ -43,7 +43,7 @@ jobs:
           git pull origin main
 
           # Copiar los archivos del build al servidor web
-          cp -f build/* /var/www/minimarket-frontend
+          cp -rf build/* /var/www/minimarket-frontend
 
           # Recargar nginx
           sudo systemctl reload nginx
