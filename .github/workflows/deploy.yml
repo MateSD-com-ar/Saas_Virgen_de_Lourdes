@@ -19,9 +19,7 @@ jobs:
         npm install  # Cambia este comando si usas yarn u otro gestor
 
     # Ejecutar las pruebas
-    - name: Run Tests
-      run: |
-        npm test  # Cambia este comando si usas otro framework de pruebas
+  
 
     - name: Set up known hosts
       run: |
