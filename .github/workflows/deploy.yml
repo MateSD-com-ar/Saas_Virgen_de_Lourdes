@@ -23,6 +23,6 @@ jobs:
         script: |
           cd /Saas_Virgen_de_Lourdes/
           git pull origin main  # O 'master', dependiendo de la rama
-          # Puedes agregar aquí otros comandos como reiniciar servicios:
-          # pm2 restart tu-aplicacion
-          # sudo systemctl restart tu-servicio
+          cp -f build/* /var/www/minimarket-frontend
+          sudo systemctl reload nginx
+          
