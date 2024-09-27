@@ -37,8 +37,7 @@ jobs:
           set -e
 
           # Navegar al directorio del proyecto frontend
-          cd /Saas_Virgen_de_Lourdes/
-
+         
           # Hacer pull de los últimos cambios en la rama 'main'
           git pull origin main
 
