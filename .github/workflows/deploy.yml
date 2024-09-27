@@ -33,7 +33,7 @@ jobs:
 
     - name: Deploy to server via SSH
       run: |
-        ssh ~/.ssh/front_id_rsa -o StrictHostKeyChecking=no -p 5118 ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+        ssh -i ~/.ssh/front_id_rsa -o StrictHostKeyChecking=no -p 5118 root@149.50.132.9 << 'EOF'
           set -e
 
           # Navegar al directorio del proyecto frontend
