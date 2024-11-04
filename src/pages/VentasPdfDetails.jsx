@@ -33,49 +33,46 @@ const VentasPdfDetails = () => {
     }, []);
 
     const { createdAt, total, client, user, saleDetailsProducts, paymentStatus, paymentMethod } = venta[0] || {};
-
+    console.log(saleDetailsProducts)
     const generatePDF = () => {
-        // Definir tamaño personalizado (80mm de ancho y 40mm de alto)
+        const ticketWidth = 50;
+        let ticketHeight = 55; // Altura inicial
+        const lineHeight = 5; // Altura de cada línea de texto
+    
+        // Calcular altura según cantidad de productos
+        if (saleDetailsProducts && saleDetailsProducts.length > 0) {
+            ticketHeight += saleDetailsProducts.length * lineHeight;
+        }
+    
         const doc = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
-            format: [44, 55] // Ancho: 80mm, Alto: 40mm
+            format: [ticketWidth, ticketHeight]
         });
-
-        doc.setFontSize(8); // Ajusta el tamaño de la fuente para que se ajuste al papel pequeño
-        doc.text(`Detalle de Venta ${id}`, 4, 10); // Ajusta la posición del texto
-
-        doc.text(`Fecha: ${formatDate(createdAt)}`, 4, 16);
-        doc.text(`Cliente: ${client || 'No disponible'}`, 4, 22);
-        doc.text(`Pago: ${paymentStatus === 'CREDIT' ? 'Fiado' : paymentStatus === 'PAID' ? 'Pagada' : 'Pendiente'}`, 4, 28);
-        doc.text(`Método: ${formatPaymentMethod(paymentMethod)}`, 4, 34);
-        doc.text(`Vendedor: ${user?.name || 'No disponible'}`, 4, 40);
-
+    
+        doc.setFontSize(8);
+        doc.text(`Detalle de Venta ${id}`, 2, 10);
+        doc.text(`Fecha: ${formatDate(createdAt)}`, 2, 16);
+        doc.text(`Cliente: ${client || 'No disponible'}`, 2, 22);
+        doc.text(`Pago: ${paymentStatus === 'CREDIT' ? 'Fiado' : paymentStatus === 'PAID' ? 'Pagada' : 'Pendiente'}`, 2, 28);
+        doc.text(`Método: ${formatPaymentMethod(paymentMethod)}`, 2, 34);
+        doc.text(`Vendedor: ${user?.name || 'No disponible'}`, 2, 40);
+    
+        // Agregar productos
         if (saleDetailsProducts && saleDetailsProducts.length > 0) {
-            const tableColumn = ["Producto", "Cant.", "Precio"];
-            const tableRows = saleDetailsProducts.map(product => [
-                product.product.name,
-                product.quantity,
-                `$${product.totalPrice}`,
-            ]);
-            const totalText = total === 0 ? 'Nada que mostrar' : `$${total}`;
-
-            // Añadir la tabla de productos y el total
-            doc.autoTable({
-                head: [tableColumn],
-                body: tableRows,
-                startY: 46,
-                theme: 'plain',
-                styles: { fontSize: 6 }, // Ajusta el tamaño de la fuente para la tabla
-                margin: { left: 2, right: 2 }, // Ajusta los márgenes para que quepa en el papel
+            saleDetailsProducts.forEach((product, index) => {
+                const productText = `${index + 1}. ${product.product.name} x${product.quantity} - $${product.unitPrice.toFixed(2)}`;
+                doc.text(productText, 2, 46 + (index * lineHeight));
             });
-
-            // Mostrar el total al final de la tabla
-            doc.text(`Total: ${totalText}`, 4, doc.lastAutoTable.finalY + 6);
+    
+            // Mostrar total al final
+            doc.setTextColor(0, 0, 0);
+            doc.setFont("Helvetica", "bold"); // Cambia "900" a "bold" y establece el tamaño
+            doc.text(`Total: $${total}`, 2, 46 + (saleDetailsProducts.length * lineHeight) + 6);
         } else {
-            doc.text('No hay productos', 4, 46);
+            doc.text('No hay productos para mostrar', 2, 46);
         }
-
+    
         if (isMobile) {
             doc.save(`venta_${id}.pdf`);
         } else {
@@ -84,7 +81,8 @@ const VentasPdfDetails = () => {
             setIsModalOpen(true);
         }
     };
-
+    
+    
     const formatPaymentMethod = (method) => {
         switch (method) {
             case 'CASH': return 'Efectivo';

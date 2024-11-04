@@ -49,7 +49,7 @@ const Admin = () => {
   const handleSearch = useCallback(debounce((searchTerm) => {
     if (products && Array.isArray(products)) {
       const filtered = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        product.code.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredProducts(filtered);
     }

@@ -25,7 +25,6 @@ function ProductsForm() {
       if (id) {
         try {
           const productData = await getProductId(id); 
-          console.log(productData.data)// Aquí deberías obtener los datos del producto desde la API
           setProduct(productData.data); // Asegúrate de que la estructura del objeto coincide con el estado
         } catch (err) {
           setError('Error al cargar los datos del producto.');
@@ -48,11 +47,12 @@ function ProductsForm() {
           brand: '',
           code: '',
           price: '',
-          roleProduct: '',
+          roleProduct: 'Almacen',
           unitMeasure: '',
           stock: '',
         });
       }
+      window.location.href = '/admin';
     } catch (err) {
       setError('Error al guardar el producto. Por favor, inténtalo de nuevo.');
     }
@@ -93,7 +93,7 @@ function ProductsForm() {
           value={product.name}
           error={error}
           onChange={handleInputChange}
-          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
+          className={`w-1/2 ${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
           required
         />
         <TextField
@@ -103,17 +103,9 @@ function ProductsForm() {
           error={error}
           value={product.brand}
           onChange={handleInputChange}
-          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
+          className={`w-1/2 ${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
         />
-        <TextField
-          type="text"
-          label='Código'
-          name='code'
-          error={error}
-          value={product.code}
-          onChange={handleInputChange}
-          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
-        />
+        
         <TextField
           type="number"
           label='Precio'
@@ -121,21 +113,9 @@ function ProductsForm() {
           error={error}
           value={product.price}
           onChange={handleInputChange}
-          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
+          className={`w-1/2 ${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
           required
         />
-        <select
-          name="roleProduct"
-          value={product.roleProduct}
-          onChange={handleInputChange}
-          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
-          required
-          error={error}
-        >
-          <option value="">Categoría</option>
-          <option value="Almacen">Almacen</option>
-         
-        </select>
         <TextField
           type="text"
           label='Unidad de Medida'
@@ -143,7 +123,7 @@ function ProductsForm() {
           error={error}
           value={product.unitMeasure}
           onChange={handleInputChange}
-          className={`${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
+          className={`w-1/2 ${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
         />
         <TextField
           type="number"
@@ -152,7 +132,16 @@ function ProductsForm() {
           error={error}
           value={product.stock}
           onChange={handleInputChange}
-          className='border px-4 py-1 rounded-lg'
+          className='w-1/2 border px-4 py-1 rounded-lg'
+        />
+        <TextField
+          type="text"
+          label='Código'
+          name='code'
+          error={error}
+          value={product.code}
+          onChange={handleInputChange}
+          className={`w-1/2 ${error ? 'border-red-500 border-2 rounded-2xl px-3' : 'px-3 py-1 rounded-full'}`}
         />
         <button
           type="submit"

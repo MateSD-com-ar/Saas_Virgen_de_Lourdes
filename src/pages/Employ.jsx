@@ -61,14 +61,24 @@ const Employ = () => {
                                 <div className='flex flex-col md:flex-row gap-4 md:gap-4 items-center'>
                                     <p className='text-sm'>{user.role === 'EMPLOYEE' ? 'Empleado' : 'ADMINISTRADOR'}</p>
                                     {user.role === 'EMPLOYEE' && (
+                                        <>
                                         <button
                                             onClick={() => handleDelete(user.id)}
                                             className='bg-red-500 text-white px-3 py-1 rounded-lg'
                                             aria-label={`Eliminar ${user.name}`}
-                                        >
+                                            >
                                             Eliminar
                                         </button>
+                                      
+                                        </>
                                     )}
+                                    <Link
+                                        to={`/empleados/${user.id}`}
+                                        className='bg-blue-500 text-white px-3 py-1 rounded-lg'
+                                        aria-label={`Editar ${user.name}`}
+                                    >
+                                        Editar
+                                    </Link>
                                 </div>
                             </div>
                         ))
