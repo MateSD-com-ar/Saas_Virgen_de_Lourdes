@@ -4,7 +4,6 @@ import { getProductsAlmacen } from '../axios/products.axios';
 import { GiCow } from "react-icons/gi";
 import { LuVegan } from "react-icons/lu";
 import { useParams } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
 
 const Checkout = () => {
   const [error, setError] = useState(null);
