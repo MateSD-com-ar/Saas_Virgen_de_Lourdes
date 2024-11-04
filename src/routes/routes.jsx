@@ -20,8 +20,7 @@ const Routers = () => {
     <BrowserRouter>
     <NavBar/>
       <Routes>
-      
-        <Route element={<ProtectedRoutes />}> {/* Rutas protegidas */}
+        <Route element={<ProtectedRoutes />}> Rutas protegidas
         <Route path="/" element={<Ventas />} />
         <Route path="/gastos" element={<Gastos />} />
         <Route path="/gastos/create" element={<GastosForm />} />
@@ -37,6 +36,7 @@ const Routers = () => {
         <Route path='/resumen' element={<Resumen/>}/>
         <Route path='/empleados' element={<Employ/>}/>
         <Route path='/empleados/create' element={<EmployForm/>}/>
+        <Route path='/empleados/:id' element={<EmployForm/>}/>
         <Route path="/producto/create/" element={<ProductsForm/>}/>
         <Route path="/producto/edit/:id" element={<ProductsForm/>}/>
         </Route>
