@@ -10,7 +10,7 @@ function ProductsForm() {
     brand: '',
     code: '',
     price: '',
-    roleProduct: '',
+    roleProduct: 'Almacen',
     unitMeasure: '',
     stock: '',
   });
