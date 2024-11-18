@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createProductAlmacen, updateProductAlmacen, getProductId } from '../axios/products.axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { TextField } from '@mui/material';
+import { Select, TextField } from '@mui/material';
 
 function ProductsForm() {
   const [product, setProduct] = useState({
@@ -65,7 +65,7 @@ function ProductsForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!product.name || !product.price || !product.roleProduct) {
+    if (!product.name || !product.price ) {
       setError('Por favor, completa todos los campos obligatorios.');
       return;
     }
@@ -134,6 +134,7 @@ function ProductsForm() {
           onChange={handleInputChange}
           className='w-1/2 border px-4 py-1 rounded-lg'
         />
+       
         <TextField
           type="text"
           label='Código'
