@@ -53,6 +53,8 @@ const VentasPdfDetails = () => {
         doc.setFontSize(8);
         doc.text(`Detalle de Venta ${id}`, 2, 10);
         doc.text(`Fecha: ${formatDate(createdAt)}`, 2, 16);
+        doc.setTextColor(0, 0, 0);
+        doc.text('Hora' + createdAt.slice(11, 16), 2, 16)
         doc.text(`Cliente: ${client || 'No disponible'}`, 2, 22);
         doc.text(`Pago: ${paymentStatus === 'CREDIT' ? 'Fiado' : paymentStatus === 'PAID' ? 'Pagada' : 'Pendiente'}`, 2, 28);
         doc.text(`Método: ${formatPaymentMethod(paymentMethod)}`, 2, 34);

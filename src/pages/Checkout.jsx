@@ -231,17 +231,18 @@ const Checkout = () => {
             />
             <input
               type="number"
-              name="quantity"
-              placeholder="Cantidad"
-              value={product.quantity}
-              onChange={(e) => handleInputChange(e, index, 'additional')}
-              className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
-            />
-            <input
-              type="number"
               name="price"
               placeholder="Precio"
               value={product.price}
+              onChange={(e) => handleInputChange(e, index, 'additional')}
+              className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
+            />
+
+<input
+              type="number"
+              name="quantity"
+              placeholder="Cantidad"
+              value={product.quantity}
               onChange={(e) => handleInputChange(e, index, 'additional')}
               className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
             />

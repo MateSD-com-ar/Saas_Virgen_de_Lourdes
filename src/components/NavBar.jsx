@@ -29,6 +29,7 @@ const NavBar = () => {
         <Link to='/cart' className='bg-green-500 text-white  lg:px-4 lg:py-2 p-1  rounded-full font-semibold hover:bg-green-600'>
           Iniciar Venta
         </Link>
+        <Link to='/productos' className='bg-yellow-300 text-black lg:px-4 lg:py-2 p-1 rounded-full font-medium'>Productos</Link>
         <div className='flex gap-1'>
 
         {isAdmin && (

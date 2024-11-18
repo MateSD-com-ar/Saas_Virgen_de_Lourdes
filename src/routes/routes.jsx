@@ -14,6 +14,7 @@ import Gastos from "../pages/Gastos";
 import GastosForm from "../pages/GastosForm";
 import VentasPdfDetails from "../pages/VentasPdfDetails";
 import Resumen from "../pages/Resumen";
+import Products from "../pages/Products";
 const Routers = () => {
   return (
     <>
@@ -22,6 +23,7 @@ const Routers = () => {
       <Routes>
         <Route element={<ProtectedRoutes />}> Rutas protegidas
         <Route path="/" element={<Ventas />} />
+        <Route path="/productos" element={<Products />} />
         <Route path="/gastos" element={<Gastos />} />
         <Route path="/gastos/create" element={<GastosForm />} />
         <Route path="/gastos/edit/:id" element={<GastosForm />} />
