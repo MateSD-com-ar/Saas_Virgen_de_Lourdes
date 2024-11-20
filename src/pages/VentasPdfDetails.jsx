@@ -50,15 +50,17 @@ const VentasPdfDetails = () => {
             format: [ticketWidth, ticketHeight]
         });
     
+    
         doc.setFontSize(8);
-        doc.text(`Detalle de Venta ${id}`, 2, 10);
-        doc.text(`Fecha: ${formatDate(createdAt)}`, 2, 16);
-        doc.setTextColor(0, 0, 0);
-        doc.text('Hora' + createdAt.slice(11, 16), 2, 16)
-        doc.text(`Cliente: ${client || 'No disponible'}`, 2, 22);
-        doc.text(`Pago: ${paymentStatus === 'CREDIT' ? 'Fiado' : paymentStatus === 'PAID' ? 'Pagada' : 'Pendiente'}`, 2, 28);
-        doc.text(`Método: ${formatPaymentMethod(paymentMethod)}`, 2, 34);
-        doc.text(`Vendedor: ${user?.name || 'No disponible'}`, 2, 40);
+        doc.addImage('https://res.cloudinary.com/ddyg4xvws/image/upload/v1732142121/slqfvyedtay83zzzbk3b.png','png', 2 ,5, 20, 10); // Agregar el logo con su tamaño y posición
+        doc.addImage('https://res.cloudinary.com/ddyg4xvws/image/upload/v1732142122/plet8ol2msu4ep66i0n0.png', 'png', 25, 5, 20, 10);
+        
+        doc.text(`Detalle de Venta ${id}`, 2, 20);
+        doc.text(`Fecha: ${createdAt.slice(11,16)} - ${formatDate(createdAt)}`, 2, 23);
+        doc.text(`Cliente: ${client || 'No disponible'}`, 2, 26);
+        doc.text(`Pago: ${paymentStatus === 'CREDIT' ? 'Fiado' : paymentStatus === 'PAID' ? 'Pagada' : 'Pendiente'}`, 2, 29);
+        doc.text(`Método: ${formatPaymentMethod(paymentMethod)}`, 2, 32);
+        doc.text(`Vendedor: ${user?.name || 'No disponible'}`, 2, 35);
     
         // Agregar productos
         if (saleDetailsProducts && saleDetailsProducts.length > 0) {
@@ -69,7 +71,7 @@ const VentasPdfDetails = () => {
     
             // Mostrar total al final
             doc.setTextColor(0, 0, 0);
-            doc.setFont("Helvetica", "bold"); // Cambia "900" a "bold" y establece el tamaño
+            doc.setFont("Helvetica", "bold");
             doc.text(`Total: $${total}`, 2, 46 + (saleDetailsProducts.length * lineHeight) + 6);
         } else {
             doc.text('No hay productos para mostrar', 2, 46);
@@ -83,7 +85,7 @@ const VentasPdfDetails = () => {
             setIsModalOpen(true);
         }
     };
-    
+
     
     const formatPaymentMethod = (method) => {
         switch (method) {
@@ -101,7 +103,7 @@ const VentasPdfDetails = () => {
         const date = new Date(dateString);
         return date.toLocaleDateString('es-ES', {
             year: 'numeric',
-            month: 'long',
+            month: 'numeric',
             day: 'numeric'
         });
     };
