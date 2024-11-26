@@ -20,7 +20,7 @@ const Checkout = () => {
     { icon: <LuVegan className='text-xl' />, idProduct: 2, name: "Verduleria", brand: "Verduleria", price: '', roleProduct: "Verduleria", unitMeasure: "", stock: 0 },
     { icon: <GiCow className='text-xl' />, idProduct: 1, name: "Carniceria", brand: "Carniceria", price: '', roleProduct: "Carniceria", unitMeasure: "kilogramo", stock: 0 }
   ];
-
+  console.log(additionalProducts)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -54,36 +54,33 @@ const Checkout = () => {
       searchInputRef.current.focus();
     }
   }, []);
-
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const productCode = e.target.value.trim().replace(/[^a-zA-Z0-9]/g, '');
-      const product = productsAlmacen.find(prod => prod.code === productCode);
-      if (!product) {
-        setSearchTerm('');
-        e.target.value = '';
-        alert('Producto no encontrado');
-        setTimeout(() => setError(null), 3000);
-        return;
-      }
-      if (product.stock === 0) {
-        setSearchTerm('');
-        e.target.value = '';
-        alert('Producto sin stock');
-        setTimeout(() => setError(null), 3000);
-        return;
-      }
-      if (product) {
-        addProduct(product);
-        setSearchTerm('');
-        e.target.value = '';
-      } else {
-        setError('Producto no encontrado');
-        setTimeout(() => setError(null), 3000);
-      }
+    if (e.key !== 'Enter') return;
+  
+    e.preventDefault();
+    const query = e.target.value.trim().toLowerCase();
+    
+    // Buscar por código de barra, nombre o marca
+    const product = productsAlmacen.find(prod => 
+      prod.code.toLowerCase().includes(query) || 
+      prod.name.toLowerCase().includes(query) || 
+      prod.brand.toLowerCase().includes(query)
+    );
+  
+    if (!product || product.stock === 0) {
+      setSearchTerm('');
+      e.target.value = '';
+      const message = !product ? 'Producto no encontrado' : 'Producto sin stock';
+      alert(message);
+      setTimeout(() => setError(null), 3000);
+      return;
     }
+  
+    addProduct(product);
+    setSearchTerm('');
+    e.target.value = '';
   };
+  
 
   const handleInputChange = async (e, index, type) => {
     const { name, value } = e.target;
@@ -121,16 +118,18 @@ const Checkout = () => {
   };
 
   const addProduct = (product) => {
-    const existingProduct = additionalProducts.find(p => p.idProduct === product.idProduct);
-    if (existingProduct) {
-      setAdditionalProducts(additionalProducts.map(p =>
-        p.idProduct === product.idProduct ? { ...p, quantity: p.quantity + 1 } : p
-      ));
-    } else {
-      setAdditionalProducts([...additionalProducts, { ...product, quantity: 1 }]);
-    }
+    setAdditionalProducts((prevState) => {
+      const existingProduct = prevState.find(p => p.idProduct === product.idProduct);
+      if (existingProduct) {
+        return prevState.map(p =>
+          p.idProduct === product.idProduct ? { ...p, quantity: p.quantity + 1 } : p
+        );
+      } else {
+        return [...prevState, { ...product, quantity: 1 }];
+      }
+    });
   };
-
+  
   const removeProduct = (index) => {
     const updatedProducts = additionalProducts.filter((_, i) => i !== index);
     setAdditionalProducts(updatedProducts);
