@@ -33,7 +33,6 @@ const VentasPdfDetails = () => {
     }, []);
 
     const { createdAt, total, client, user, saleDetailsProducts, paymentStatus, paymentMethod } = venta[0] || {};
-    console.log(saleDetailsProducts)
     const generatePDF = () => {
         const ticketWidth = 50;
         let ticketHeight = 55; // Altura inicial

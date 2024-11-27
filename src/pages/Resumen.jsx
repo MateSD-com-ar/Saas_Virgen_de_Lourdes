@@ -123,7 +123,6 @@ const Resumen = () => {
 
   const totalDailySales = dailySales.reduce((total, sale) => total + sale.total, 0);
   const totalDailyGastos = dailyGastos.reduce((total, gasto) => total + gasto.amountMoney, 0);
-  console.log(totalDailyGastos)
   const netTotalDaily = totalDailySales - totalDailyGastos;
   
   const barChartData = {
