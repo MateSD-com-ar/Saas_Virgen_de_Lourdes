@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createSaleDetails, getSaleDetails, deleteDetailsSale, updateDetailsSale } from '../axios/sales.axios';
 import { getProductsAlmacen } from '../axios/products.axios';
-import { GiCow } from "react-icons/gi";
-import { LuVegan } from "react-icons/lu";
+import { CiSquarePlus } from "react-icons/ci";
 import { useParams } from 'react-router-dom';
 
 const Checkout = () => {
@@ -16,8 +15,7 @@ const Checkout = () => {
   const searchInputRef = useRef(null);
   const { id } = useParams()
   const initialAdditionalProducts = [
-    { icon: <LuVegan className='text-xl' />, idProduct: 2, name: "Verduleria", brand: "Verduleria", price: 0, roleProduct: "Verduleria", unitMeasure: "", stock: 0 },
-    { icon: <GiCow className='text-xl' />, idProduct: 1, name: "Carniceria", brand: "Carniceria", price: 0, roleProduct: "Carniceria", unitMeasure: "", stock: 0 }
+    { icon: <CiSquarePlus className='text-xl' />, idProduct: '', name: "", brand: "", price: 0, roleProduct: "", unitMeasure: "", stock: 0 },
   ];
   useEffect(() => {
     const fetchProducts = async () => {
@@ -70,26 +68,11 @@ const Checkout = () => {
     e.target.value = '';
   };
   
-  const handleInputChange = async (e, index, type) => {
+  const handleInputChange = (e, index, type) => {
     const { name, value } = e.target;
-    if (type === 'cart') {
-      const updatedCart = [...saleDetail]; // Clona el array del carrito
-      const productToUpdate = updatedCart[index]?.product;
-      if (productToUpdate) {
-        updatedCart[index].quantity = value;
-          try {
-          await updateDetailsSale(updatedCart[index].id, { quantity: value });
-            setSaleDetails(updatedCart);
-        } catch (error) {
-          console.error('Error updating sale detail:', error);
-          setError('Error updating sale detail');
-        }
-      } else {
-        console.error("El producto no existe en el índice proporcionado");
-      }
-    } else {
+    if (type === 'additional') {
       const updatedProducts = [...additionalProducts];
-      updatedProducts[index][name] = value;
+      updatedProducts[index][name] = value; // Actualiza el valor de la propiedad correspondiente
       setAdditionalProducts(updatedProducts);
     }
   };
@@ -183,42 +166,70 @@ const Checkout = () => {
 
         <h3 className='text-center'>Agregar productos adicionales</h3>
         {additionalProducts.map((product, index) => (
-          <div key={index} className='flex flex-col md:flex-row gap-2 w-full'>
-            <input
-              type="text"
-              name="name"
-              placeholder="Nombre del producto"
-              value={product.name}
-              onChange={(e) => handleInputChange(e, index, 'additional')}
-              className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
-            />
-            <input
-              type="text"
-              name="brand"
-              placeholder="Descripción"
-              value={product.brand}
-              onChange={(e) => handleInputChange(e, index, 'additional')}
-              className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
-            />
-            <input
-              type="number"
-              name="price"
-              placeholder="Precio"
-              value={product.price}
-              onChange={(e) => handleInputChange(e, index, 'additional')}
-              className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
-            />
-            <input
-              type="number"
-              name="quantity"
-              placeholder="Cantidad"
-              value={product.quantity}
-              onChange={(e) => handleInputChange(e, index, 'additional')}
-              className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
-            />
-            <button type="button" onClick={() => removeProduct(index)} className='px-4 py-1 bg-red-700 text-white font-medium rounded-full w-full md:w-auto'>Eliminar</button>
-          </div>
-        ))}
+  <div key={index} className='flex flex-col md:flex-row gap-2 w-full'>
+    {/* Select para categorías */}
+    <select
+      name="idProduct"
+      value={product.idProduct}
+      onChange={(e) => handleInputChange(e, index, 'additional')}
+      className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
+    >
+      <option value="">Seleccionar categoría</option>
+      <option value="1">Carnicería</option>
+      <option value="2">Verdulería</option>
+    </select>
+
+    {/* Input para nombre del producto */}
+    <input
+      type="text"
+      name="name"
+      placeholder="Nombre del producto"
+      value={product.name}
+      onChange={(e) => handleInputChange(e, index, 'additional')}
+      className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
+    />
+
+    {/* Input para descripción */}
+    <input
+      type="text"
+      name="brand"
+      placeholder="Descripción"
+      value={product.brand}
+      onChange={(e) => handleInputChange(e, index, 'additional')}
+      className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
+    />
+
+    {/* Input para precio */}
+    <input
+      type="number"
+      name="price"
+      placeholder="Precio"
+      value={product.price}
+      onChange={(e) => handleInputChange(e, index, 'additional')}
+      className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
+    />
+
+    {/* Input para cantidad */}
+    <input
+      type="number"
+      name="quantity"
+      placeholder="Cantidad"
+      value={product.quantity}
+      onChange={(e) => handleInputChange(e, index, 'additional')}
+      className='border-2 px-4 py-2 rounded-full w-full md:w-1/4'
+    />
+
+    {/* Botón de eliminar */}
+    <button
+      type="button"
+      onClick={() => removeProduct(index)}
+      className='px-4 py-1 bg-red-700 text-white font-medium rounded-full w-full md:w-auto'
+    >
+      Eliminar
+    </button>
+  </div>
+))}
+
 {/*importenate no borrar */}
 <div className='mt-4'>
           <input
