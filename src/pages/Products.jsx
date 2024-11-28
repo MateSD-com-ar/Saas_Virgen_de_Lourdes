@@ -92,8 +92,8 @@ const Products = () => {
         {filteredProducts.length > 0 ? (
           filteredProducts.map(product => (
             <div key={product.idProduct} className="border-2 border-solid border-black p-2 my-2 rounded-lg">
-              <h3><strong>Producto:</strong> {product.name}</h3>
-              <h3><strong>Marca:</strong>{product.brand}</h3>
+              <h3><strong>Marca:</strong> {product.name}</h3>
+              <h3><strong>Producto:</strong>{product.brand}</h3>
               <p><strong>Precio:</strong> ${product.price}</p>
               <p><strong>Codigo:</strong> {product.code}</p>
               <p><strong>Strock</strong> {product.stock} unidades</p>
