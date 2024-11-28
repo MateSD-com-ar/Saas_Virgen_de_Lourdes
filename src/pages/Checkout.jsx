@@ -17,7 +17,7 @@ const Checkout = () => {
   const { id } = useParams()
   const initialAdditionalProducts = [
     { icon: <LuVegan className='text-xl' />, idProduct: 2, name: "Verduleria", brand: "Verduleria", price: 0, roleProduct: "Verduleria", unitMeasure: "", stock: 0 },
-    { icon: <GiCow className='text-xl' />, idProduct: 1, name: "Carniceria", brand: "Carniceria", price: 0, roleProduct: "Carniceria", unitMeasure: "kilogramo", stock: 0 }
+    { icon: <GiCow className='text-xl' />, idProduct: 1, name: "Carniceria", brand: "Carniceria", price: 0, roleProduct: "Carniceria", unitMeasure: "", stock: 0 }
   ];
   useEffect(() => {
     const fetchProducts = async () => {
