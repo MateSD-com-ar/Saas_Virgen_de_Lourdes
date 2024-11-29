@@ -50,6 +50,8 @@ const Admin = () => {
     if (products && Array.isArray(products)) {
       const filtered = products.filter(product =>
         product.code.toLowerCase().includes(searchTerm.toLowerCase())
+        || product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        || product.brand.toString().includes(searchTerm)
       );
       setFilteredProducts(filtered);
     }
