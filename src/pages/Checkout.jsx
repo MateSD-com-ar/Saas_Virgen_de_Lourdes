@@ -3,6 +3,7 @@ import { createSaleDetails, getSaleDetails, deleteDetailsSale, updateDetailsSale
 import { getProductsAlmacen } from '../axios/products.axios';
 import { CiSquarePlus } from "react-icons/ci";
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
   const [error, setError] = useState(null);
@@ -14,6 +15,7 @@ const Checkout = () => {
   const [additionalProducts, setAdditionalProducts] = useState([]);
   const searchInputRef = useRef(null);
   const { id } = useParams()
+  const navigate = useNavigate();
   const initialAdditionalProducts = [
     { icon: <CiSquarePlus className='text-xl' />, idProduct: '', name: "", brand: "", price: 0, roleProduct: "", unitMeasure: "", stock: 0 },
   ];
@@ -107,8 +109,9 @@ const Checkout = () => {
           saleId: id,
         }))
       ];
+      console.log(saleDetailsProducts)
       await createSaleDetails(saleDetailsProducts);
-        window.location.href=`/venta/${id}`
+        navigate(`/venta/${id}`)
       localStorage.removeItem('cartItems');
     } catch (err) {
       setError('Error creating sale or sale details');

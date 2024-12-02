@@ -15,6 +15,4 @@ export  const NavLinks = [
 
 // export const url= "https://minimarket-virgen-lourdes-backend.onrender.com/"
 
- //export const url= "http://vps-4404045-x.dattaweb.com:8081/" 
-
  export const url="https://backend.minimercado.site/" 

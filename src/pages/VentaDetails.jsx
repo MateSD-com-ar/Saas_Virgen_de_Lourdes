@@ -85,7 +85,7 @@ const VentaDetails = () => {
       console.error('Error actualizando la venta:', err);
     }
   };
-
+  console.log(venta)
   if (!venta) {
     return <div className='w-full m-auto text-center'>Cargando...</div>;
   }

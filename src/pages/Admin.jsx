@@ -103,8 +103,15 @@ const Admin = () => {
             <p>Código: {product.code}</p>
             <p>Stock: {product.stock}</p>
             <div className='flex gap-2'>
-              <Link to={`/producto/edit/${product.idProduct}`} className='bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600'>Editar</Link>
-              <button onClick={() => handleDeleteProduct(product.idProduct)} className='bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600'>Eliminar</button>
+              
+              {
+                product.idProduct === 2 ||  product.idProduct === 1 ? '' : 
+                <>
+                <Link to={`/producto/edit/${product.idProduct}`} className='bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600'>Editar</Link>
+                 <button onClick={() => handleDeleteProduct(product.idProduct)} className='bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600'>Eliminar</button>
+                </>
+              }
+              
             </div>
           </div>
         ))}
