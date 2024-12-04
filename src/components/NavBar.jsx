@@ -50,7 +50,7 @@ const NavBar = () => {
       window.removeEventListener('keydown', resetInactivityTimer);
       window.removeEventListener('scroll', resetInactivityTimer);
     };
-  }, [dispatch, sessionTimeout, inactivityTimeout]);
+  }, [dispatch, sessionTimeout, inactivityTimeout, user?.role]);
 
   const handleLogoutClick = () => {
     dispatch(logout());
