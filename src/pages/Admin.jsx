@@ -45,17 +45,32 @@ const Admin = () => {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleSearch = useCallback(debounce((searchTerm) => {
-    if (products && Array.isArray(products)) {
-      const filtered = products.filter(product =>
-        product.code.toLowerCase().includes(searchTerm.toLowerCase())
-        || product.name.toLowerCase().includes(searchTerm.toLowerCase())
-        || product.brand.toString().includes(searchTerm)
-      );
-      setFilteredProducts(filtered);
-    }
-  }, 300), [products]);
+  const handleSearch = useCallback(
+    debounce((searchTerm) => {
+      if (!searchTerm.trim()) {
+        // Si el término de búsqueda está vacío, muestra todos los productos
+        setFilteredProducts(products);
+        return;
+      }
+
+      if (products && Array.isArray(products)) {
+        const filtered = products.filter(product => {
+          const code = product.code?.toLowerCase() || '';
+          const name = product.name?.toLowerCase() || '';
+          const brand = product.brand?.toString() || '';
+
+          return (
+            code.includes(searchTerm.toLowerCase()) ||
+            name.includes(searchTerm.toLowerCase()) ||
+            brand.includes(searchTerm)
+          );
+        });
+
+        setFilteredProducts(filtered);
+      }
+    }, 300),
+    [products] // Importante incluir `products` como dependencia
+  );
 
   const onSearchChange = (e) => {
     setSearch(e.target.value);
@@ -103,15 +118,13 @@ const Admin = () => {
             <p>Código: {product.code}</p>
             <p>Stock: {product.stock}</p>
             <div className='flex gap-2'>
-              
               {
-                product.idProduct === 2 ||  product.idProduct === 1 ? '' : 
+                product.idProduct === 2 || product.idProduct === 1 ? '' : 
                 <>
-                <Link to={`/producto/edit/${product.idProduct}`} className='bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600'>Editar</Link>
-                 <button onClick={() => handleDeleteProduct(product.idProduct)} className='bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600'>Eliminar</button>
+                  <Link to={`/producto/edit/${product.idProduct}`} className='bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600'>Editar</Link>
+                  <button onClick={() => handleDeleteProduct(product.idProduct)} className='bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600'>Eliminar</button>
                 </>
               }
-              
             </div>
           </div>
         ))}
