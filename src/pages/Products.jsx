@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../redux/slices/cartSlice';
+// import { useDispatch } from 'react-redux';
+// import { addToCart } from '../redux/slices/cartSlice';
 import { getProductsAlmacen } from '../axios/products.axios';
 import debounce from 'lodash.debounce';
 
@@ -10,7 +10,7 @@ const Products = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   // Fetch products from the API
   useEffect(() => {
@@ -36,9 +36,9 @@ const Products = () => {
   }, []);
 
   // Add product to the cart
-  const handleAddToCart = useCallback((product) => {
-    dispatch(addToCart(product));
-  }, [dispatch]);
+  // const handleAddToCart = useCallback((product) => {
+  //   dispatch(addToCart(product));
+  // }, [dispatch]);
 
   // Search function with debounce
   const handleSearch = useCallback(
@@ -96,7 +96,7 @@ const Products = () => {
               <h3><strong>Producto:</strong>{product.brand}</h3>
               <p><strong>Precio:</strong> ${product.price}</p>
               <p><strong>Codigo:</strong> {product.code}</p>
-              <p><strong>Strock</strong> {product.stock} unidades</p>
+              <p><strong>Stock</strong> {product.stock} unidades</p>
               
             </div>
           ))
